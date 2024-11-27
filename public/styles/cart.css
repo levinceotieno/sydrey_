@@ -1,0 +1,118 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  color: #333;
+}
+
+header {
+  background-color: #004d00; /* Dark green */
+  color: white;
+  padding: 1rem;
+  text-align: center;
+}
+
+.cart-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.cart-count {
+  background-color: #ff0000;
+  color: white;
+  border-radius: 50%;
+  padding: 0.5rem;
+  font-size: 0.9rem;
+}
+
+/* Modal Styles */
+.modal {
+  display: block; /* Ensures visibility when 'hidden' is removed */
+  position: fixed;
+  z-index: 1000; /* Ensure it's above other elements */
+  padding: 20px;
+  border-radius: 10px;
+  left: 50%;
+  top: 50%;
+  width: 300px;
+  height: 100%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.5); /* Black background with transparency */
+  max-width: 90%; /* Make responsive */
+}
+
+.modal-content {
+  background-color: #ffffff;
+  margin: 15% auto;
+  padding: 20px;
+  border-radius: 10px;
+  width: 50%;
+  position: relative;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  font-size: 24px;
+  font-weight: bold;
+  color: #004d00; /* Dark green */
+  cursor: pointer;
+}
+
+.close-btn:hover {
+  color: #ff0000;
+}
+
+.modal.hidden {
+  display: none; /* Ensure hidden class works */
+}
+
+h2 {
+  text-align: center;
+  color: #004d00;
+}
+
+label {
+  display: block;
+  margin: 10px 0;
+  font-weight: bold;
+}
+
+input[type="text"],
+input[type="radio"] {
+  display: block;
+  width: 100%;
+  margin: 5px 0;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.radio-group {
+  display: flex;
+  gap: 1rem;
+  margin: 10px 0;
+}
+
+.submit-btn {
+  background-color: #004d00;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 5px;
+  width: 100%;
+}
+
+.submit-btn:hover {
+  background-color: #006600;
+}
+
+/* Hidden class */
+.hidden {
+  display: none;
+}

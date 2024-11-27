@@ -1,0 +1,44 @@
+<h1>Manage Orders</h1>
+<ul>
+  <a href="/admin">Back</a>
+  <form action="/auth/admin/logout" method="POST" style="display: inline;">
+     <button type="submit">Logout</button>
+  </form>
+</ul>
+
+<table border="1">
+  <thead>
+    <tr>
+      <th>Order ID</th>
+      <th>User Name</th>
+      <th>Product Name</th>
+      <th>Quantity</th>
+      <th>Status</th>
+      <th>Created At</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% orders.forEach(order => { %>
+      <tr>
+        <td><%= order.id %></td>
+        <td><%= order.user_name %></td>
+        <td><%= order.product_name %></td>
+        <td><%= order.quantity %></td>
+        <td><%= order.status %></td>
+        <td><%= order.created_at %></td>
+        <td>
+          <form action="/admin/update-order/<%= order.id %>" method="POST" style="display: inline;">
+            <select name="status">
+              <option value="pending" <%= order.status === 'pending' ? 'selected' : '' %>>Pending</option>
+              <option value="processing" <%= order.status === 'processing' ? 'selected' : '' %>>Processing</option>
+              <option value="shipped" <%= order.status === 'shipped' ? 'selected' : '' %>>Shipped</option>
+              <option value="delivered" <%= order.status === 'delivered' ? 'selected' : '' %>>Delivered</option>
+            </select>
+            <button type="submit">Update</button>
+          </form>
+        </td>
+      </tr>
+    <% }); %>
+  </tbody>
+</table>
