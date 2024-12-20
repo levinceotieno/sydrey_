@@ -44,14 +44,15 @@ router.post('/register', async (req, res) => {
 
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
+    const defaultPhoto = '/images/default-profile.png'; // Default photo path
 
     // Insert user into database
     const [result] = await db.query(
-      'INSERT INTO users (name, email, password, phone_number, role, is_admin) VALUES (?, ?, ?, ?, ?, ?)',
-      [name, email, hashedPassword, phone_number, userRole, isAdmin]
+      'INSERT INTO users (name, email, password, phone_number, role, is_admin, profile_photo) VALUES (?, ?, ?, ?, ?, ?, ?)',
+      [name, email, hashedPassword, phone_number, userRole, isAdmin, defaultPhoto]
     );
 
-    req.session.user = { id: result.insertId, name, role: userRole, isAdmin }; // Save user in session
+    req.session.user = { id: result.insertId, name, role: userRole, isAdmin, profile_photo: defaultPhoto }; // Save user in session
     if (isAdmin) {
       return res.redirect('/admin');
     }
@@ -79,7 +80,7 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ error: 'Invalid email or password.' });
     }
 
-    const { id, name, role, is_admin, password: hashedPassword } = user[0];
+    const { id, name, role, is_admin, password: hashedPassword, profile_photo } = user[0];
 
     // Validate password
     const isMatch = await bcrypt.compare(password, hashedPassword);
@@ -89,7 +90,7 @@ router.post('/login', async (req, res) => {
 
     // Generate JWT token
     const token = jwt.sign({ id, name, role }, process.env.JWT_SECRET, { expiresIn: '1d' });
-    req.session.user = { id, name, role, isAdmin: is_admin, token }; // Save user in session
+    req.session.user = { id, name, role, isAdmin: is_admin, profile_photo, token }; // Save user in session
     if (is_admin === 1) {
 	return res.status(200).redirect('/admin');
     }

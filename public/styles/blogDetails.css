@@ -1,0 +1,193 @@
+body {
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: white;
+  color: #333333;
+}
+
+/* Navbar Styles */
+.navbar-container {
+  width: 100%;
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  top: 0;
+  z-index: 999;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+}
+
+.logo {
+  font-size: 1.5rem;
+  color: #004d40;
+}
+
+.nav-links {
+  display: flex;
+  gap: 1rem;
+}
+
+.nav-link {
+  color: #004d40;
+  text-decoration: none;
+}
+
+.nav-link:hover {
+  text-decoration: underline;
+}
+
+.menu-toggle {
+  display: none;
+  font-size: 1.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* Responsive Navbar for Small Screens */
+@media (max-width: 768px) {
+  .menu-toggle {
+    display: block;
+    color: #004d40;
+  }
+
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    background-color: white;
+    padding: 10px;
+    position: absolute;
+    top: 82px;
+    left: 4px;
+    /**border: 1px solid #ccc;**/
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .nav-links.visible {
+    display: flex;
+  }
+}
+
+/* Blog List Styles */
+.blog-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  padding: 80px 20px 20px;
+}
+
+/* Blog Card Styles */
+.blog-card {
+  background-color: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  display: flex; /* Make the blog card a flex container */
+  flex-direction: column; /* Stack children vertically */
+  justify-content: space-between; /* Ensure content is spaced out */
+  height: 100%;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.blog-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.blog-title {
+  font-size: 1.25rem;
+  color: #004d40;
+}
+/*
+.blog-content {
+  margin: 1rem 0;
+  color: #555555;
+}*/
+
+.blog-meta {
+  font-size: 0.875rem;
+  color: #888888;
+}
+
+/* Button Styles */
+.btn {
+  display: inline-block;
+  text-decoration: none;
+  background-color: #004d40;
+  color: white;
+  padding: 0.5rem 1rem;
+  font-size: 10px;
+  border-radius: 4px;
+  font-weight: bold;
+  text-align: center;
+  transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+  background-color: #004d00;
+}
+
+.btn.delete {
+  background-color: #ff0000;
+}
+
+.btn.delete:hover {
+  background-color: #cc0000;
+}
+
+.blog-details {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background: #f9f9f9;
+  border-radius: 8px;
+}
+
+.blog-details h1 {
+  font-size: 2.5em;
+  margin-bottom: 10px;
+}
+
+.blog-details .blog-meta {
+  font-size: 0.9em;
+  color: #666;
+}
+
+.blog-details .blog-content {
+  font-size: 1.2em;
+  line-height: 1.6;
+  margin-top: 20px;
+}
+
+.blog-details .btn {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #4caf50;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 5px;
+}
+
+.blog-details .btn:hover {
+  background-color: #45a049;
+}
+
+.blog-details-page {
+  margin-top: 80px; /* Push content below the fixed navbar */
+  padding: 20px;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center; /* Centers the buttons horizontally */
+  gap: 20px; /* Adds space between the buttons */
+  margin-top: auto; /* Adds some spacing above the buttons */
+}

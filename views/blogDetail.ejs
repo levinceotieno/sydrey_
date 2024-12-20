@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Educational Blog</title>
+  <link rel="stylesheet" href="/styles/blogDetails.css">
+</head>
+<body>
+  <header class="navbar-container">
+    <div class="navbar">
+      <button class="menu-toggle" id="menuToggle">☰</button>
+      <h1 class="logo">Sydrey Educational Blog</h1>
+      <nav class="nav-links">
+        <a href="/products" class="nav-link">Products</a>
+        <% if (user && user.isAdmin) { %>
+          <a href="/admin" class="nav-link">Admin Dashboard</a>
+	  <a href="/blogs/new" class="nav-link">Create Post</a>
+        <% } %>
+	<a href="/blogs" class="nav-link">Close</a>
+      </nav>
+      <!--<button class="menu-toggle" id="menuToggle">☰</button> -->
+    </div>
+  </header>
+
+  <main class="blog-details-page">
+   <div class="blog-detail">
+    <article class="blog-card">
+      <h2 class="blog-title"><%= blog.title %></h2>
+      <p class="blog-content"><%= blog.content %></p>
+      <p class="blog-meta">By <%= blog.author %> on <%= new Date(blog.created_at).toLocaleString() %></p>
+      <div class="button-container">
+        <% if (user && user.isAdmin) { %>
+	  <a href="/blogs/<%= blog.id %>/edit" class="btn">Edit</a>
+	  <form action="/blogs/<%= blog.id %>/delete" method="POST" class="inline-form">
+	    <button type="submit" class="btn delete">Delete</button>
+	  </form>
+        <% } %>
+      </div>
+    </article>
+   </div>
+  </main>
+
+  <script>
+    document.getElementById('menuToggle').addEventListener('click', () => {
+      document.querySelector('.nav-links').classList.toggle('visible');
+    });
+  </script>
+</body>
+</html>

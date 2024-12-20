@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Orders - Sydreys Enterprise</title>
+  <link rel="stylesheet" href="/styles/orders.css">
+</head>
+<body>
+  <header>
+    <nav>
+      <a href="/" class="logo">Sydreys Enterprise</a>
+      <div class="links">
+        <a href="/user/profile">Profile</a>
+        <a href="/cart">Cart</a>
+        <form action="/auth/logout" method="POST">
+          <button type="submit">Logout</button>
+        </form>
+      </div>
+    </nav>
+  </header>
+  <main>
+    <h1>My Orders</h1>
+    <% if (orders.length > 0) { %>
+      <a href="/products">Shop Now</a>
+      <table border="1">
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>Product Name</th>
+            <th>Quantity</th>
+            <th>Delivery Address</th>
+            <th>Status</th>
+            <th>Delivery Date</th>
+            <th>Created At</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% orders.forEach(order => { %>
+            <tr>
+              <td><%= order.id %></td>
+              <td><%= order.product_name %></td>
+              <td><%= order.quantity %></td>
+              <td><%= order.delivery_address %></td>
+              <td><%= order.status %></td>
+              <td><%= order.delivery_date %></td>
+              <td><%= new Date(order.created_at).toLocaleString() %></td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    <% } else { %>
+      <p>No orders found. <a href="/products">Start shopping now</a> to place your first order!</p>
+    <% } %>
+  </main>
+  <script src="/js/orders.js"></script>
+</body>
+</html>

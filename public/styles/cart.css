@@ -1,118 +1,232 @@
 body {
   font-family: Arial, sans-serif;
-  background-color: #f4f4f4;
-  color: #333;
+  background-color: white;
+  color: #004d40; /* Dark green font */
+  margin: 0;
+  padding: 0;
 }
 
 header {
-  background-color: #004d00; /* Dark green */
-  color: white;
-  padding: 1rem;
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+  padding: 10px 20px;
+}
+
+.header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+}
+
+.logo {
+  font-size: 12px;
+  font-weight: bold;
+  color: #004d40;
+  text-decoration: none;
+}
+
+.toggle-menu {
+  background: none;
+  border: none;
+  color: #004d40;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.nav-links {
+  display: flex;
+  flex-direction: row;
+  /*justify-content: flex-end;*/
+  /*align-items: center;*/
+  gap: 10px;
+  margin-right: 20px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #004d40;
+  font-size: 16px;
+  padding: 5px 10px;
+  transition: background-color 0.3s;
+}
+
+.nav-links a:hover {
+  background-color: #e0e0e0;
+  border-radius: 5px;
+}
+
+@media (min-width: 769px) {
+  .header-container {
+     display: flex;
+     justify-content: space-between;
+     align-items: center;
+     padding: 0 20px;
+  }
+  .toggle-menu {
+     display: none;
+  }
+
+  .nav-links {
+     display: flex !important; /* Ensure links are always visible */
+     gap: 20px;
+     align-items: center;
+  }
+  .nav-link {
+     text-decoration: none;
+     color: #004d40; /* Dark green color */
+     font-size: 16px;
+     font-weight: bold;
+  }
+  .logo {
+     font-size: 12px;
+     font-weight: bold;
+     text-decoration: none;
+     color: #004d40;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .header-container {
+    justify-content: space-between;
+  }
+
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    top: 56px;
+    left: 0;
+    /*width: 100%;*/
+    background-color: white;
+    padding: 10px;
+  }
+
+  .nav-links.visible {
+    display: flex;
+  }
+}
+
+/* Cart Section */
+.cart-content {
+  margin: 100px auto 20px; /* Adjusted to avoid header overlap */
+  padding: 20px;
+  max-width: 800px;
+}
+
+.cart-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.cart-item {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #004d40;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.cart-item strong {
+  font-size: 14px;
+  color: #333;
+}
+
+.cart-item input[type="number"] {
+  width: 60px;
   text-align: center;
+  border: 1px solid #ccc;
+  border-radius: 3px;
 }
 
-.cart-icon {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-}
-
-.cart-count {
-  background-color: #ff0000;
+.update-btn,
+.remove-btn,
+.primary-btn {
+  background-color: #004d40;
   color: white;
-  border-radius: 50%;
-  padding: 0.5rem;
-  font-size: 0.9rem;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 3px;
+  margin-top: 5px;
+}
+
+.update-btn:hover,
+.remove-btn:hover,
+.primary-btn:hover {
+  background-color: #004d00;
+}
+
+.primary-btn {
+  width: 100%;
+  text-align: center;
 }
 
 /* Modal Styles */
 .modal {
-  display: block; /* Ensures visibility when 'hidden' is removed */
+  display: flex;
   position: fixed;
-  z-index: 1000; /* Ensure it's above other elements */
-  padding: 20px;
-  border-radius: 10px;
-  left: 50%;
-  top: 50%;
-  width: 300px;
-  height: 100%;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  overflow: auto;
-  background-color: rgba(0, 0, 0, 0.5); /* Black background with transparency */
-  max-width: 90%; /* Make responsive */
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  align-items: center;
+  visibility: visible;
+  z-index: 1000;
+  opacity: 1;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.modal.hidden {
+  display: none;
+  visibility: hidden;
+  opacity: 0;
 }
 
 .modal-content {
-  background-color: #ffffff;
-  margin: 15% auto;
+  background-color: #f0f0f0;
   padding: 20px;
   border-radius: 10px;
-  width: 50%;
-  position: relative;
+  text-align: center;
+  width: 60%;
+  max-width: 500px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .close-btn {
   position: absolute;
   top: 10px;
-  right: 20px;
-  font-size: 24px;
-  font-weight: bold;
-  color: #004d00; /* Dark green */
+  right: 10px;
+  font-size: 20px;
+  color: #333;
   cursor: pointer;
 }
 
-.close-btn:hover {
-  color: #ff0000;
+.modal-content h2 {
+  margin-bottom: 20px;
 }
 
-.modal.hidden {
-  display: none; /* Ensure hidden class works */
-}
-
-h2 {
-  text-align: center;
-  color: #004d00;
-}
-
-label {
+.modal-content form label {
   display: block;
-  margin: 10px 0;
-  font-weight: bold;
+  margin-bottom: 10px;
 }
 
-input[type="text"],
-input[type="radio"] {
-  display: block;
-  width: 100%;
-  margin: 5px 0;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
+.modal-content form input[type="text"],
+.modal-content form input[type="radio"] {
+  margin-bottom: 20px;
 }
 
-.radio-group {
-  display: flex;
-  gap: 1rem;
-  margin: 10px 0;
-}
-
-.submit-btn {
-  background-color: #004d00;
-  color: white;
-  border: none;
-  padding: 10px 15px;
-  font-size: 1rem;
-  cursor: pointer;
-  border-radius: 5px;
-  width: 100%;
-}
-
-.submit-btn:hover {
-  background-color: #006600;
-}
-
-/* Hidden class */
-.hidden {
-  display: none;
+.modal-content form .primary-btn {
+  margin-top: 10px;
 }

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Products - Sydrey Enterprise</title>
+  <link rel="stylesheet" href="/styles/products.css">
+</head>
+<body>
+  <header>
+    <nav class="navbar">
+      <div class="menu">
+        <a href="/products">All Products</a>
+        <a href="/products?category=wholesale">Wholesale</a>
+        <a href="/products?category=retail">Retail</a>
+        <% if (user) { %>
+          <a href="/orders/history">My Orders</a>
+          <form action="/auth/logout" method="POST" class="logout-form">
+            <button type="submit">Logout</button>
+          </form>
+        <% } else { %>
+          <a href="/auth/login">Login</a>
+          <a href="/auth/register">Register</a>
+        <% } %>
+      </div>
+      <div class="brand">
+        <a href="/" class="logo">Sydrey Enterprise</a>
+      </div>
+      <div class="cart-profile">
+        <% if (user) { %>
+          <a href="/user/profile" class="profile-link">
+            <% if (user.profile_photo) { %>
+              <img src="<%= user.profile_photo %>?v=<%= Date.now() %>" alt="Profile Photo" class="profile-image">
+            <% } else { %>
+              <img src="/images/default-profile.png" alt="Profile Photo" class="profile-image">
+            <% } %>
+            Profile
+          </a>
+        <% } %>
+        <a href="/cart" class="cart-icon">
+          Cart (<span id="cart-count"><%= cartCount %></span>)
+        </a>
+      </div>
+    </nav>
+  </header>
+  <main>
+    <!-- Featured Products Slideshow -->
+    <section class="slideshow">
+      <h4>Featured Products</h4>
+      <div class="slideshow-container">
+        <% featuredProducts.forEach((product, index) => { %>
+          <div class="slide <%= index === 0 ? 'active' : '' %>">
+            <img src="<%= product.image_url %>" alt="<%= product.name %>" class="slide-image">
+            <div class="slide-info">
+              <h3><%= product.name %></h3>
+              <p><strong>Ksh <%= product.price %></strong></p>
+            </div>
+          </div>
+        <% }); %>
+        <button class="prev" onclick="changeSlide(-1)">&#10094;</button>
+        <button class="next" onclick="changeSlide(1)">&#10095;</button>
+      </div>
+    </section>
+    
+    <section class="products">
+      <h3>Our Products</h3>
+      <div class="products-container">
+        <% if (products.length > 0) { %>
+          <% products.forEach(product => { %>
+            <div class="product-card">
+              <img src="<%= product.image_url %>" alt="<%= product.name %>">
+              <h3><%= product.name %></h3>
+              <p><%= product.description %></p>
+              <p><strong>Ksh <%= product.price %></strong></p>
+              <p>Available: <%= product.quantity %></p>
+              <% if (user) { %>
+                <button onclick="addToCart('<%= product.id %>')">Add to Cart</button>
+              <% } else { %>
+                <p><a href="/auth/login">Login</a> to order</p>
+              <% } %>
+            </div>
+          <% }); %>
+        <% } else { %>
+          <p>No products are available at the moment. Please check back later!</p>
+        <% } %>
+      </div>
+    </section>
+  </main>
+  <script src="/js/toggle.js"></script>
+  <script src="/js/slideshow.js"></script>
+  <script>
+    async function addToCart(productId) {
+      const response = await fetch('/cart/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ productId, quantity: 1 }),
+      });
+      const result = await response.json();
+      if (result.success) {
+        document.getElementById('cart-count').innerText = result.cartCount;
+      } else {
+        alert(result.message);
+      }
+    }
+  </script>
+</body>
+</html>

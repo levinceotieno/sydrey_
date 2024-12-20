@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Products - Sydreys Enterprise</title>
+  <link rel="stylesheet" href="/styles/products.css">
+</head>
+<body>
+  <header class="products-header">
+    <nav class="top-nav">
+      <a href="/" class="logo">Sydreys Enterprise</a>
+      <div class="cart">
+	<a href="/cart" class="cart-icon">Cart (<span id="cart-count"><%= cartCount %></span>)</a>
+      </div>
+      <button class="menu-toggle">☰</button>
+    </nav>
+    <aside id="side-menu" class="side-menu hidden">
+      <ul>
+        <% if (user) { %>
+          <li>
+            <a href="/user/profile">
+              <% if (user.profile_photo) { %>
+                <img src="<%= user.profile_photo %>?v=<%= Date.now() %>" alt="Profile Photo" class="profile-image">
+              <% } else { %>
+                <img src="/images/default-profile.png" alt="Profile Photo" class="profile-image"> Profile
+              <% } %>
+            </a>
+          </li>
+          <li><a href="/orders/history">My Orders</a></li>
+          <li>
+            <form action="/auth/logout" method="POST">
+              <button type="submit">Logout</button>
+            </form>
+          </li>
+        <% } else { %>
+          <li><a href="/auth/login">Login</a></li>
+          <li><a href="/auth/register">Register</a></li>
+        <% } %>
+        <li><a href="/products">All Products</a></li>
+        <li><a href="/products?category=wholesale">Wholesale</a></li>
+        <li><a href="/products?category=retail">Retail</a></li>
+      </ul>
+    </aside>
+  </header>
+  <main>
+    <section class="product-ad">
+      <h2>Featured Products</h2>
+      <div id="ad-carousel" class="ad-carousel">
+        <% products.forEach(product => { %>
+          <div class="ad-slide">
+            <img src="<%= product.image_url %>" alt="<%= product.name %>">
+            <h3><%= product.name %></h3>
+            <p>Ksh <%= product.price %></p>
+          </div>
+        <% }); %>
+      </div>
+    </section>
+    <h2 class="product-heading">Our Products</h2>
+    <div class="products-container">
+      <% if (products.length > 0) { %>
+        <% products.forEach(product => { %>
+          <div class="product-card">
+            <img src="<%= product.image_url %>" alt="<%= product.name %>">
+            <h3><%= product.name %></h3>
+            <p><%= product.description %></p>
+            <p><strong>Ksh <%= product.price %></strong></p>
+            <p>Available: <%= product.quantity %></p>
+            <% if (user) { %>
+              <button onclick="addToCart('<%= product.id %>')">Add to Cart</button>
+            <% } else { %>
+              <p><a href="/auth/login">Login</a> to order</p>
+            <% } %>
+          </div>
+        <% }); %>
+      <% } else { %>
+        <p>No products are available at the moment. Please check back later!</p>
+      <% } %>
+    </div>
+  </main>
+
+  <script src="/js/toggle.js"></script>
+  <script>
+
+    // Add to Cart functionality
+    async function addToCart(productId) {
+      const response = await fetch('/cart/add', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ productId, quantity: 1 }),
+      });
+      const result = await response.json();
+      if (result.success) {
+        document.getElementById('cart-count').innerText = result.cartCount;
+      } else {
+        alert(result.message);
+      }
+    }
+
+    // Product carousel
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.ad-slide');
+    setInterval(() => {
+      slides[currentSlide].style.display = 'none';
+      currentSlide = (currentSlide + 1) % slides.length;
+      slides[currentSlide].style.display = 'block';
+    }, 3000);
+  </script>
+</body>
+</html>

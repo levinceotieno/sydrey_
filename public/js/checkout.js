@@ -1,4 +1,6 @@
 console.log("checkout.js loaded");
+
+// Checkout form submission
 document.getElementById('checkout-form').addEventListener('submit', async (e) => {
   e.preventDefault();
 
@@ -38,9 +40,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const checkoutModal = document.getElementById('checkout-modal');
   const closeModal = document.getElementById('close-modal');
 
+  // Ensure modal elements are present
   if (!checkoutBtn || !checkoutModal || !closeModal) {
-    console.error("One or more elements (button/modal/close button) are missing.");
-    return; // Only use return here inside a conditional or function
+    console.error("One or more modal elements (button/modal/close button) are missing.");
+    return;
   }
 
   console.log("All modal elements found:");
@@ -49,25 +52,27 @@ document.addEventListener('DOMContentLoaded', () => {
   console.log("Close Modal:", closeModal);
 
   // Open modal
-  if (checkoutBtn) {
-     checkoutBtn.addEventListener('click', () => {
-        console.log("Checkout button clicked");
-        checkoutModal.classList.toggle('hidden');
-	console.log("Modal visibility toggled. Current classes:", checkoutModal.className);
-     });
-  } else {
-     console.error("Checkout button not found in DOM.");
-  }
-
-  // Close modal
-  closeModal.addEventListener('click', () => {
-    checkoutModal.classList.add('hidden');
+  checkoutBtn.addEventListener('click', () => {
+    console.log("Checkout button clicked");
+    if (checkoutModal.classList.contains('hidden')) {
+      checkoutModal.classList.remove('hidden');
+      console.log("Modal opened.");
+    } else {
+      console.log("Modal is already visible.");
+    }
   });
 
-  // Close modal when clicking outside the modal content
+  // Close modal on close button click
+  closeModal.addEventListener('click', () => {
+    checkoutModal.classList.add('hidden');
+    console.log("Modal closed via close button.");
+  });
+
+  // Close modal when clicking outside modal content
   window.addEventListener('click', (event) => {
     if (event.target === checkoutModal) {
       checkoutModal.classList.add('hidden');
+      console.log("Modal closed by clicking outside.");
     }
   });
 });

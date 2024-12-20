@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Products - Sydreys Enterprise</title>
+  <link rel="stylesheet" href="/styles/products.css">
+</head>
+<body>
+  <header>
+    <nav>
+      <a href="/" class="logo">Sydreys Enterprise</a>
+      <div class="links">
+
+	<% if (user) { %>
+	   <li><a href="/user/profile">
+	      <% if (user.profile_photo) { %>
+	           <img src="<%= user.profile_photo %>?v=<%= Date.now() %>" alt="Profile Photo" class="profile-image">
+	      <% } else { %>
+	   	   <img src="/images/default-profile.png" alt="Profile Photo" class="profile-image"> Profile
+	      <% } %>
+	   </a></li>
+
+	  <a href="/cart" class="cart-icon">
+	     Cart (<span id="cart-count"><%= cartCount %></span>)
+	  </a>
+	  <a href="/orders/history">My Orders</a>
+          <form action="/auth/logout" method="POST">
+            <button type="submit">Logout</button>
+          </form>
+        <% } else { %>
+          <a href="/cart" class="cart-icon">
+          <a href="/auth/login">Login</a>
+          <a href="/auth/register">Register</a>
+        <% } %>
+      </div>
+    </nav>
+  </header>
+  <main>
+    <h2>Our Products</h2>
+    <div class="product-categories">
+      <a href="/products">All Products</a>
+      <a href="/products?category=wholesale">Wholesale</a>
+      <a href="/products?category=retail">Retail</a>
+    </div>
+    <div class="products-container">
+      <% if (products.length > 0) { %>
+        <% products.forEach(product => { %>
+          <div class="product-card">
+            <img src="<%= product.image_url %>" alt="<%= product.name %>">
+            <h2><%= product.name %></h2>
+            <p><%= product.description %></p>
+            <p><strong>Ksh <%= product.price %></strong></p>
+            <p>Available: <%= product.quantity %></p>
+            <% if (user) { %>
+              <button onclick="addToCart('<%= product.id %>')">Add to Cart</button>
+            <% } else { %>
+              <p><a href="/auth/login">Login</a> to order</p>
+            <% } %>
+          </div>
+        <% }); %>
+      <% } else { %>
+        <p>No products are available at the moment. Please check back later!</p>
+      <% } %>
+    </div>
+  </main>
+  <script>
+    async function addToCart(productId) {
+      const response = await fetch('/cart/add', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+	body: JSON.stringify({ productId, quantity: 1 }),
+      });
+      const result = await response.json();
+      if (result.success) {
+        document.getElementById('cart-count').innerText = result.cartCount;
+      } else {
+        alert(result.message);
+      }
+    }
+  </script>
+</body>
+</html>

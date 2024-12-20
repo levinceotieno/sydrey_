@@ -43,6 +43,11 @@ router.get('/', async (req, res) => {
 
       const cartItems = await cartModel.getCart(userId);
 
+      const updatedCart = cartItems.map(item => ({
+	 ...item,
+	 totalPrice: item.price * item.quantity // Add total price calculation
+      }));
+
       res.render('cart', { 
 	 cart: cartItems, 
 	 cartCount: cartItems.length, 
@@ -82,15 +87,19 @@ router.post('/checkout', async (req, res) => {
 	    continue; // Skip items with missing product
 	 }
 
-         // Insert order into the database
-         await db.query('INSERT INTO orders (user_id, product_id, quantity, delivery_location, delivery_address, delivery_date, status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())', [
+         // Calculate the total price for the item
+	 const totalPrice = item.price * item.quantity;
+
+	 // Insert order into the database
+         await db.query('INSERT INTO orders (user_id, product_id, quantity, delivery_location, delivery_address, delivery_date, total_price, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [
 	 userId,
 	 item.product_id,
 	 item.quantity,
 	 deliveryLocation,
 	 deliveryAddress,
 	 deliveryDate,
-	 'Pending',
+	 totalPrice,
+	 'Pending'
       ]);
       }
 

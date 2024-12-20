@@ -1,0 +1,28 @@
+<h1>Welcome, <%= user.name %></h1>
+<link rel="stylesheet" href="/styles/profile.css">
+<% if (user.profile_photo) { %>
+    <img src="<%= user.profile_photo %>?v=<%= Date.now() %>" alt="Profile Photo" class="profile-image">
+<% } else { %>
+    <img src="/images/default-profile.png" alt="Profile Photo" class="profile-image">
+<% } %>
+<form action="/user/profile" method="POST">
+  <input type="text" name="name" value="<%= user.name %>" />
+  <input type="text" name="phone_number" value="<%= user.phone_number %>" />
+  <input type="email" name="email" value="<%= user.email %>" />
+  <button type="submit">Update Profile</button>
+</form>
+<form action="/user/profile/photo" method="POST" enctype="multipart/form-data">
+  <label for="profilePhoto">Upload Profile Photo:</label>
+  <input type="file" name="profilePhoto" id="profilePhoto" accept="image/*" required>
+  <button type="submit">Upload Photo</button>
+</form>
+<a href="/products">Products</a>
+<a href="/orders/history">View Order History</a>
+<script>
+  const form = document.querySelector('form[action="/user/profile/photo"]');
+  form.addEventListener('submit', () => {
+    const spinner = document.createElement('div');
+    spinner.className = 'loading-spinner';
+    document.body.appendChild(spinner);
+  });
+</script>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= blog.title %></title>
+    <link rel="stylesheet" href="/styles/blogs.css">
+</head>
+<body>
+    <header class="navbar-container">
+        <div class="navbar">
+            <h1 class="logo">Sydrey Educational Blog</h1>
+            <nav class="nav-links">
+                <a href="/blogs" class="nav-link">Back to Blogs</a>
+            </nav>
+        </div>
+    </header>
+    <main class="blog-detail">
+        <h1 class="blog-title"><%= blog.title %></h1>
+        <p class="blog-meta">By <%= blog.author %> on <%= new Date(blog.created_at).toLocaleString() %></p>
+        <div class="blog-content">
+            <%= blog.content %>
+        </div>
+	<a href="/blogs" class="btn">Minimize</a>
+    </main>
+</body>
+</html>

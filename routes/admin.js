@@ -119,4 +119,26 @@ router.post('/delete-product/:id', async (req, res) => {
    }
 });
 
+router.get('/category/:category', async (req, res) => {
+   const { category } = req.params;
+
+   try {
+   const [products] = await db.query('SELECT * FROM products WHERE category = ?', [category]);
+      res.render('admin', { user: req.user, products });
+   } catch (err) {
+      console.error('Error fetching products by category:', err);
+      res.status(500).send('Internal Server Error');
+   }
+});
+
+router.get('/categories', async (req, res) => {
+   try {
+       const [categories] = await db.query('SELECT DISTINCT category FROM products');
+       res.json(categories);
+   } catch (err) {
+       console.error('Error fetching categories:', err);
+       res.status(500).json({ error: 'Failed to fetch categories.' });
+   }
+});
+
 module.exports = router;

@@ -3,83 +3,176 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Products - Sydreys Enterprise</title>
+  <title>Products</title>
   <link rel="stylesheet" href="/styles/products.css">
 </head>
 <body>
-  <header>
-    <nav>
-      <a href="/" class="logo">Sydreys Enterprise</a>
-      <div class="links">
+  <!-- Navbar Section -->
+  <div class="navbar-container">
+    <div class="navbar">
 
+      <!-- ☰ Menu Icon -->
+      <div class="menu-toggle">☰</div>
+
+      <!-- Brand Name -->
+      <div class="logo">Sydrey Enterprise</div>
+
+      <!-- Cart and Profile -->
+      <div class="cart-profile">
+        <!-- Cart Icon -->
+        <a href="/cart">
+          <i class="fa fa-shopping-cart"></i> (<%= cartCount %>)
+        </a>
+
+        <!-- Profile Icon -->
 	<% if (user) { %>
-	   <li><a href="/user/profile">
-	      <% if (user.profile_photo) { %>
-		   <img src="<%= user.profile_photo %>" alt="Profile Photo" class="profile-image"> Profile
-	      <% } else { %>
-	   	   <img src="/images/default-profile.png" alt="Profile Photo" class="profile-image"> Profile
-	      <% } %>
-	   </a></li>
-
-	  <a href="/cart" class="cart-icon">
-	     Cart (<span id="cart-count"><%= cartCount %></span>)
-	  </a>
-	  <a href="/orders/history">My Orders</a>
-          <form action="/auth/logout" method="POST">
-            <button type="submit">Logout</button>
-          </form>
-        <% } else { %>
-          <a href="/cart" class="cart-icon">
-          <a href="/auth/login">Login</a>
-          <a href="/auth/register">Register</a>
-        <% } %>
+	  <% if (!(user.profile_photo)) { %>
+	     <a href="/user/profile">
+	        <img src="/images/default.png" alt="Profile Photo" class="profile-image">
+	     </a>
+	  <% } %>
+	<% } %>
+	<% if (user && user.profile_photo) { %>
+	   <a href="/user/profile">
+	      <img src="<%= user.profile_photo %>?v=<%= Date.now() %>" alt="Profile Photo" class="profile-image">
+	   </a>
+	<% } %>
       </div>
-    </nav>
-  </header>
-  <main>
-    <h2>Our Products</h2>
-    <div class="product-categories">
-      <a href="/products">All Products</a>
-      <a href="/products?category=wholesale">Wholesale</a>
-      <a href="/products?category=retail">Retail</a>
     </div>
-    <div class="products-container">
-      <% if (products.length > 0) { %>
-        <% products.forEach(product => { %>
-          <div class="product-card">
-            <img src="<%= product.image_url %>" alt="<%= product.name %>">
-            <h2><%= product.name %></h2>
-            <p><%= product.description %></p>
-            <p><strong>Ksh <%= product.price %></strong></p>
-            <p>Available: <%= product.quantity %></p>
-            <% if (user) { %>
-              <button onclick="addToCart('<%= product.id %>')">Add to Cart</button>
-            <% } else { %>
-              <p><a href="/auth/login">Login</a> to order</p>
-            <% } %>
-          </div>
-        <% }); %>
+
+    <!-- Dropdown Menu -->
+    <div class="menu">
+      <% if (user) { %>
+        <a href="/">Home</a>
+        <a href="/user/profile">Profile</a>
+        <a href="/orders/history">My Orders</a>
+	<a href="/blogs">Blog</a>
+        <form method="POST" action="/auth/logout" class="logout-form">
+          <button class="logout-btn" type="submit">Logout</button>
+        </form>
       <% } else { %>
-        <p>No products are available at the moment. Please check back later!</p>
-      <% } %>
+        <a href="/">Home</a>
+	<a href="/blogs">Blog</a>
+        <a href="/auth/login">Login</a>
+	<a href="/auth/register">Register</a>
+      <% } %> 
     </div>
-  </main>
+  </div>
+
+  <!-- Slideshow Section -->
+  <div class="slideshow-container">
+    <h4>Featured Products</h4>
+    <% featuredProducts.forEach((product, index) => { %>
+      <div class="slide <%= index === 0 ? 'active' : '' %>">
+        <img src="<%= product.image_url %>" alt="<%= product.name %>" class="slide-image">
+        <div class="slide-info">
+          <h3><%= product.name %></h3>
+	  <p><%= product.description %></p>
+	  <div class="product-category <%= product.category === 'wholesale' ? 'wholesale' : 'retail' %>">
+	      <%= product.category === 'wholesale' ? 'Wholesale' : 'Retail' %>
+	  </div>
+	  <p>Available: <%= product.quantity %></p>
+          <p>Ksh. <%= product.price %></p>
+        </div>
+      </div>
+    <% }) %>
+    <button class="prev">&lt;</button>
+    <button class="next">&gt;</button>
+  </div>
+
+  <h3>Ginger, Tumeric, Garlic, And Seeds</h3>
+  <div class="filter-buttons">
+      <button onclick="filterProducts('all')">All</button>
+      <button onclick="filterProducts('wholesale')">Wholesale</button>
+      <button onclick="filterProducts('retail')">Retail</button>
+  </div>
+  <!-- Products Section -->
+  <div class="products-container">
+    <% products.forEach(product => { %>
+      <div class="product-card" data-category="<%= product.category %>">
+      <!-- <div class="product-card"> -->
+        <!-- Product Image -->
+        <img src="<%= product.image_url %>" alt="<%= product.name %>" class="product-image">
+
+        <!-- Product Name -->
+        <h2><%= product.name %></h2>
+	<p><%= product.description %></p>
+	<div class="product-category <%= product.category === 'wholesale' ? 'wholesale' : 'retail' %>">
+	    <%= product.category === 'wholesale' ? 'Wholesale' : 'Retail' %>
+	</div>
+	<p>Available: <%= product.quantity %></p>
+
+        
+        <p>Ksh. <%= product.price %></p>
+
+        <!-- Add to Cart Button -->
+        <button data-id="<%= product.id %>" class="add-to-cart-btn">Add to Cart</button>
+      </div>
+    <% }) %>
+  </div>
+
   <script>
-    async function addToCart(productId) {
-      const response = await fetch('/cart/add', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-	body: JSON.stringify({ productId, quantity: 1 }),
-      });
-      const result = await response.json();
-      if (result.success) {
-        document.getElementById('cart-count').innerText = result.cartCount;
-      } else {
-        alert(result.message);
-      }
+
+    // Filtering logic
+    function filterProducts(category) {
+       const productCards = document.querySelectorAll('.product-card');
+       productCards.forEach(card => {
+	  if (category === 'all' || card.dataset.category === category) {
+	      card.classList.remove('hidden');
+	  } else {
+	      card.classList.add('hidden');
+	  }
+       });
     }
+
+    // Toggle dropdown menu
+    document.querySelector('.menu-toggle').addEventListener('click', () => {
+      document.querySelector('.menu').classList.toggle('show');
+    });
+
+    // Slideshow logic
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const showSlide = (index) => {
+      slides.forEach((slide, i) => slide.classList.toggle('active', i === index));
+    };
+    document.querySelector('.prev').addEventListener('click', () => {
+      currentSlide = (currentSlide > 0) ? currentSlide - 1 : slides.length - 1;
+      showSlide(currentSlide);
+    });
+    document.querySelector('.next').addEventListener('click', () => {
+      currentSlide = (currentSlide + 1) % slides.length;
+      showSlide(currentSlide);
+    });
+
+    setInterval(() => {
+       currentSlide = (currentSlide + 1) % slides.length;
+       showSlide(currentSlide);
+    }, 5000);
+
+    // Add to Cart functionality
+    document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+      button.addEventListener('click', async () => {
+        const productId = button.dataset.id;
+        try {
+          const response = await fetch('/products/cart/add', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ productId }),
+          });
+          const data = await response.json();
+          if (data.success) {
+            alert('Product added to cart successfully!');
+            document.querySelector('.cart-profile .fa-shopping-cart').textContent = `(${data.cartCount})`;
+          } else {
+            alert(data.message);
+          }
+        } catch (error) {
+          alert('Error adding product to cart.');
+          console.error(error);
+        }
+      });
+    });
   </script>
 </body>
 </html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/styles/main.css">
+  <link rel="stylesheet" href="/styles/admin-orders.css">
+  <title>Manage Orders</title>
+</head>
+<body>
+  <header>
+    <h1>Order Management</h1>
+  </header>
+  <main class="manage-orders">
+    <table>
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>Customer</th>
+          <th>Products</th>
+	  <th>Quatity</th>
+	  <th>Total</th>
+	  <th>Address</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% orders.forEach(order => { %>
+          <tr>
+            <td><%= order.id %></td>
+            <td><%= order.user_id %></td>
+            <td><%= order.product_id %></td>
+	    <td><%= order.total %></td>
+	    <td><%= order.delivery_address %></td>
+	    <td><%= order.status %></td>
+	    <td><%= order.actions %><td>
+            <td>
+              <select onchange="updateStatus('<%= order.id %>', this.value)">
+                <option value="pending" <%= order.status === 'pending' ? 'selected' : '' %>>Pending</option>
+                <option value="processing" <%= order.status === 'processing' ? 'selected' : '' %>>Processing</option>
+                <option value="shipped" <%= order.status === 'shipped' ? 'selected' : '' %>>Shipped</option>
+                <option value="delivered" <%= order.status === 'delivered' ? 'selected' : '' %>>Delivered</option>
+              </select>
+            </td>
+            <td class="actions">
+              <button onclick="viewOrder('<%= order.id %>')">Update</button>
+              <button onclick="deleteOrder('<%= order.id %>')">Delete</button>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </main>
+  <script src="/js/orders.js"></script>
+</body>
+</html>

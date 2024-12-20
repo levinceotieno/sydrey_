@@ -7,24 +7,31 @@
   <link rel="stylesheet" href="/styles/register.css">
 </head>
 <body>
-  <header>
-    <h1>Register</h1>
+  <header class="register-header">
+    <h1>Create Your Account</h1>
   </header>
-  <main>
-    <form action="/auth/register" method="POST">
-      <input type="text" name="name" placeholder="Full Name" required />
-      <input type="email" name="email" placeholder="Email" required />
-      <input type="password" name="password" placeholder="Password" required />
-      <input type="password" name="confirmPassword" placeholder="Confirm Password" required />
-      <input type="text" name="phone_number" placeholder="Phone Number" />
-      <select name="role" required>
-        <option value="customer">Customer</option>
-        <option value="farmer">Farmer</option>
-      </select>
-      <input type="text" name="passkey" placeholder="Admin Passkey (optional)" />
-      <button type="submit">Register</button>
-    </form>
-    <p>Already have an account? <a href="/auth/login">Login</a></p>
+  <main class="register-main">
+    <section class="register-container">
+      <form action="/auth/register" method="POST" class="register-form">
+        <input type="text" name="name" placeholder="Full Name" required />
+        <input type="email" name="email" placeholder="Email" required />
+        <input type="password" name="password" placeholder="Password" required />
+        <input type="password" name="confirmPassword" placeholder="Confirm Password" required />
+        <input type="text" name="phone_number" placeholder="Phone Number" />
+        <select name="role" required>
+          <option value="customer">Customer</option>
+          <option value="farmer">Farmer</option>
+        </select>
+        <input type="text" name="passkey" placeholder="Admin Passkey (optional)" />
+        <button type="submit" class="btn register-btn">Register</button>
+      </form>
+      <p class="login-link">
+        Already have an account? <a href="/auth/login">Login</a>
+      </p>
+    </section>
   </main>
+  <footer class="register-footer">
+    <p>© 2024 Sydreys Enterprise. All rights reserved.</p>
+  </footer>
 </body>
 </html>

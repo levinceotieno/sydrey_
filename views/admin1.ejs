@@ -1,0 +1,49 @@
+<h1>Admin Dashboard</h1>
+<h2>Welcome, <%= user.name %> (Admin)</h2>
+<p>You can manage the platform here.</p>
+<ul>
+  <form action="/auth/admin/logout" method="POST" style="display: inline;">
+     <button type="submit">Logout</button>
+  </form>
+
+  <li><a href="/products">Go to Products</a></li> <!-- Link to products page -->
+</ul>
+<a href="/admin/orders">View Orders</a>
+<form action="/admin/add-product" method="POST" enctype="multipart/form-data">
+  <input type="text" name="name" placeholder="Product Name" required />
+  <textarea name="description" placeholder="Description" required></textarea>
+  <input type="number" name="price" placeholder="Price" required />
+  <input type="number" name="quantity" placeholder="Quantity" required />
+  <select name="category" required>
+    <option value="wholesale">Wholesale</option>
+    <option value="retail">Retail</option>
+  </select>
+  <input type="file" name="image" accept="image/*" required />
+  <button type="submit">Add Product</button>
+</form>
+
+<hr>
+
+<% products.forEach(product => { %>
+  <div>
+    <h3><%= product.name %></h3>
+    <p><%= product.description %></p>
+    <img src="<%= product.image_url %>" alt="<%= product.name %>" width="100" height="100" />
+    <form action="/admin/edit-product/<%= product.id %>" method="POST" enctype="multipart/form-data">
+       <input type="text" name="name" value="<%= product.name %>" placeholder="Product Name" required />
+       <textarea name="description" placeholder="Description" required><%= product.description %></textarea>
+       <input type="number" name="price" value="<%= product.price %>" placeholder="Price" required />
+       <input type="number" name="quantity" value="<%= product.quantity %>" placeholder="Quantity" required />
+       <select name="category" required>
+          <option value="wholesale" <%= product.category === 'wholesale' ? 'selected' : '' %>>Wholesale</option>
+          <option value="retail" <%= product.category === 'retail' ? 'selected' : '' %>>Retail</option>
+       </select>
+       <input type="file" name="image" accept="image/*" />
+       <button type="submit">Save Changes</button>
+    </form>
+
+    <form action="/admin/delete-product/<%= product.id %>" method="POST">
+      <button type="submit">Delete</button>
+    </form>
+  </div>
+<% }); %>
