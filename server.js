@@ -189,7 +189,7 @@ app.post('/admin/orders/update-status/:id', async (req, res) => {
      }
 });
 
-app.post('/admin/orders/delete/:id', authenticateUser, authorizeRole('admin'), async (req, res) => {
+app.delete('/admin/orders/:id/delete', authenticateUser, authorizeRole('admin'), async (req, res) => {
     const { id } = req.params;
 
     if (!id) {
@@ -207,8 +207,8 @@ app.post('/admin/orders/delete/:id', authenticateUser, authorizeRole('admin'), a
 
 	res.json({ message: 'Order deleted successfully' });
     } catch (err) {
-	console.error(err);
-	res.status(500).send('Failed to delete order');
+	console.error('Error deleting order:', err);
+	res.status(500).json({ message: 'Failed to delete order', error: err.message });
     }
 });
 
@@ -239,12 +239,13 @@ app.post('/admin/orders/:id/update', async (req, res) => {
   res.json({ message: 'Order status updated successfully' });
 });
 **/
+/**
 app.delete('/admin/orders/:id/delete', async (req, res) => {
   const { id } = req.params;
 
   await db.query('DELETE FROM orders WHERE id = ?', [id]);
   res.json({ message: 'Order deleted successfully' });
-});
+});**/
 
 app.put('/admin/orders/:orderId/status', (req, res) => {
   const { orderId } = req.params;

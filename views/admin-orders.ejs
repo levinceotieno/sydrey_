@@ -26,8 +26,8 @@
 
 	  <!-- Delete Order Form -->
 	  <form action="/admin/orders/delete/<%= order.id %>" method="POST">
-              <button data-id="<%= order.id %>" class="delete-order-btn">Delete Order</button>
-          </form>
+    	     <button type="button" data-id="<%= order.order_id %>" class="delete-order-btn">Delete Order</button>
+	  </form>
         </div>
       <% }); %>
     </div>
