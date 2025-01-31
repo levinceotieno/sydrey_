@@ -17,7 +17,8 @@
           <li><a href="/blogs/new">Create Blog</a></li>
         </ul>
       </nav>
-      <button class="toggle-menu" id="toggleMenu">☰</button>
+      <button class="menu-toggle" id="menuToggle">☰</button>
+      <!-- <button class="toggle-menu" id="toggleMenu">☰</button> -->
     </div>
   </header>
   <main>
@@ -30,6 +31,11 @@
       <button type="submit">Update Blog Post</button>
     </form>
   </main>
-  <script src="/scripts/toggleMenu.js"></script>
+  <!-- <script src="/scripts/toggleMenu.js"></script> -->
+  <script>
+    document.getElementById('menuToggle').addEventListener('click', () => {
+       document.querySelector('.nav-links').classList.toggle('visible');
+    });
+  </script>
 </body>
 </html>
