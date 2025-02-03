@@ -5,18 +5,16 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js",
-    "build": "echo 'No build step required'"
+    "start": "node server.js"
   },
   "keywords": [],
-  "author": "Susan Kimemia",
+  "author": "",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.3",
     "connect-session-sequelize": "^7.1.7",
     "dotenv": "^16.4.5",
-    "ejs": "^3.1.10",
     "express": "^4.21.1",
     "express-mysql-session": "^3.0.3",
     "express-session": "^1.18.1",
@@ -25,7 +23,7 @@
     "mysql": "^2.18.1",
     "mysql2": "^3.11.4"
   },
-  "engines": {
-    "node": "v18.20.2"
+  "devDependencies": {
+    "ejs": "^3.1.10"
   }
 }
