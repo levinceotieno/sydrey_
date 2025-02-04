@@ -27,15 +27,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-const dbConfig = {
-	    host: process.env.DB_HOST,
-	    port: parseInt(process.env.DB_PORT, 10),
-	    user: process.env.DB_USER,
-	    password: process.env.DB_PASSWORD,
-	    database: process.env.DB_NAME,
-};
-
-const sessionStore = new MySQLStore(dbConfig);
+const sessionStore = new MySQLStore({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+});
 
 app.use(session({
     secret: process.env.SESSION_SECRET, // Replace with a strong secret
@@ -49,11 +46,15 @@ app.use(session({
 }));
 
 // Database Connection
-
 let db;
 (async () => {
   try {
-    db = await mysql.createPool(dbConfig);
+    db = await mysql.createConnection({
+      host: process.env.DB_HOST,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
+    });
     console.log('Connected to the database');
   } catch (err) {
     console.error('Database connection failed:', err);
