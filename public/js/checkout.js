@@ -1,3 +1,5 @@
+const BASE_URL = "https://uncomfortable-gertruda-sydrey-backend-3a3c7743.koyeb.app";
+
 console.log("checkout.js loaded");
 
 // Checkout form submission
@@ -9,11 +11,12 @@ document.getElementById('checkout-form').addEventListener('submit', async (e) =>
   const deliveryAddress = document.getElementById('deliveryAddress').value;
 
   try {
-    const response = await fetch('/cart/checkout', {
+    const response = await fetch(`${BASE_URL}/cart/checkout`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
+      credentials: 'include',
       body: JSON.stringify({
         userId, // Use the global variable set in the EJS file
         deliveryLocation,

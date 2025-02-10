@@ -1,10 +1,13 @@
+const BASE_URL = "https://uncomfortable-gertruda-sydrey-backend-3a3c7743.koyeb.app";
+
 document.addEventListener('DOMContentLoaded', () => {
   const statusForms = document.querySelectorAll('.update-status-form');
   statusForms.forEach(form => {
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const formData = new FormData(form);
-      const url = form.action;
+      const url = `${BASE_URL}${form.action.replace(window.location.origin, '')}`; // Ensure BASE_URL is used
+      //const url = form.action;
       try {
         console.log('Submitting to URL:', url);
         console.log('Status:', formData.get('status'));
@@ -14,11 +17,14 @@ document.addEventListener('DOMContentLoaded', () => {
             'Content-Type': 'application/json',
             'Accept': 'application/json'
           },
-          credentials: 'same-origin', // Important for session-based auth
-          body: JSON.stringify({
-            status: formData.get('status')
-          })
-        });
+	  credentials: 'include',
+	  body: JSON.stringify({ status: formData.get('status') })
+	});
+          //credentials: 'same-origin', // Important for session-based auth
+          //body: JSON.stringify({
+            //status: formData.get('status')
+          //})
+        //});
         console.log('Response status:', response.status);
         if (!response.ok) {
           const errorText = await response.text();
@@ -52,12 +58,13 @@ document.querySelectorAll('.delete-order-btn').forEach(button => {
 
     if (confirm('Are you sure you want to delete this order?')) {
       try {
-        const response = await fetch(`/admin/orders/${orderId}/delete`, {
+        const response = await fetch(`${BASE_URL}/admin/orders/${orderId}/delete`, {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json'
           },
-          credentials: 'same-origin'
+	  credentials: 'include'
+          //credentials: 'same-origin'
         });
 
         if (!response.ok) {

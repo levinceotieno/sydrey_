@@ -1,3 +1,5 @@
+const BASE_URL = "https://uncomfortable-gertruda-sydrey-backend-3a3c7743.koyeb.app";
+
 async function updateCart(productId) {
   const quantityInput = document.getElementById(`quantity-${productId}`);
   const quantity = parseInt(quantityInput.value);
@@ -11,9 +13,10 @@ async function updateCart(productId) {
     // Disable the input to prevent further changes during processing
     quantityInput.disabled = true;
 
-    const response = await fetch('/cart/update', {
+    const response = await fetch(`${BASE_URL}/cart/update`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
       body: JSON.stringify({ productId, quantity }),
     });
 
@@ -45,9 +48,10 @@ async function removeFromCart(productId) {
   }
 
   try {
-    const response = await fetch('/cart/remove', {
+    const response = await fetch(`${BASE_URL}/cart/remove`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
       body: JSON.stringify({ productId }),
     });
 
@@ -66,11 +70,12 @@ async function removeFromCart(productId) {
 
 async function updateStatus(orderId, newStatus) {
   try {
-      const response = await fetch('/admin/update-order-status', {
+      const response = await fetch(`${BASE_URL}/admin/update-order-status`, {
 	method: 'POST',
 	headers: {
 	       'Content-Type': 'application/json',
 	},
+	credentials: 'include',
 	body: JSON.stringify({ orderId, status: newStatus }),
       });
       const result = await response.json();
@@ -87,7 +92,7 @@ async function updateStatus(orderId, newStatus) {
 async function deleteOrder(orderId) {
    if (!confirm('Are you sure you want to delete this order?')) return;
    try {
-      const response = await fetch(`/admin/delete-order/${orderId}`, { method: 'DELETE' });
+      const response = await fetch(`${BASE_URL}/admin/delete-order/${orderId}`, { method: 'DELETE' });
       const result = await response.json();
       if (result.success) {
 	 alert('Order deleted successfully');
