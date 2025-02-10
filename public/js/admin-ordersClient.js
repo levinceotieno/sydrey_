@@ -1,4 +1,4 @@
-const BASE_URL = "https://uncomfortable-gertruda-sydrey-backend-3a3c7743.koyeb.app";
+//const BASE_URL = "https://uncomfortable-gertruda-sydrey-backend-3a3c7743.koyeb.app";
 
 document.addEventListener('DOMContentLoaded', () => {
   const statusForms = document.querySelectorAll('.update-status-form');
@@ -6,8 +6,8 @@ document.addEventListener('DOMContentLoaded', () => {
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const formData = new FormData(form);
-      const url = `${BASE_URL}${form.action.replace(window.location.origin, '')}`; // Ensure BASE_URL is used
-      //const url = form.action;
+      //const url = `${BASE_URL}${form.action.replace(window.location.origin, '')}`; // Ensure BASE_URL is used
+      const url = form.action;
       try {
         console.log('Submitting to URL:', url);
         console.log('Status:', formData.get('status'));
@@ -58,7 +58,7 @@ document.querySelectorAll('.delete-order-btn').forEach(button => {
 
     if (confirm('Are you sure you want to delete this order?')) {
       try {
-        const response = await fetch(`${BASE_URL}/admin/orders/${orderId}/delete`, {
+        const response = await fetch(`/admin/orders/${orderId}/delete`, {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json'
