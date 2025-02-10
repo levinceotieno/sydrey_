@@ -1,9 +1,11 @@
 const express = require('express');
+const db = require('./db');
 const mysql = require('mysql2/promise'); // Use promise-based version of mysql2
 const path = require('path');
 const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session);
 const bodyParser = require('body-parser');
+const fs = require('fs');
 require('dotenv').config();
 const { router: authRoutes } = require('./routes/auth');
 const adminRoutes = require('./routes/admin');
@@ -32,7 +34,11 @@ const sessionStore = new MySQLStore({
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-});
+    ssl: {
+	  ca: fs.readFileSync(path.join(__dirname, 'config', 'ca.pem')), // Use CA cert
+	  rejectUnauthorized: true,
+    },
+}, db);
 
 app.use(session({
     secret: process.env.SESSION_SECRET, // Replace with a strong secret
@@ -45,6 +51,7 @@ app.use(session({
     },
 }));
 
+/**
 // Database Connection
 let db;
 (async () => {
@@ -54,6 +61,10 @@ let db;
       user: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
+      ssl: {
+	    ca: fs.readFileSync(path.join(__dirname, 'config', 'ca.pem')), // Use CA cert
+	    rejectUnauthorized: true,
+      },
     });
     console.log('Connected to the database');
   } catch (err) {
@@ -61,6 +72,7 @@ let db;
     process.exit(1);
   }
 })();
+**/
 
 //app.use(express.static(path.join(__dirname, 'public')));
 //app.use(express.json());

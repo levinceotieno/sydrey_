@@ -1,4 +1,5 @@
 const mysql = require('mysql2/promise');
+const fs = require('fs');
 require('dotenv').config();
 
 const createTables = async () => {
@@ -8,7 +9,10 @@ const createTables = async () => {
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-  });
+    ssl: {
+	  ca: fs.readFileSync('config/ca.pem')  // Path to CA certificate
+    }
+  };
 
   let db;
   try {

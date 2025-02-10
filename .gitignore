@@ -1,0 +1,5 @@
+.env
+*.pem
+config/ca.pem
+node_modules/
+
