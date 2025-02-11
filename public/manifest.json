@@ -1,0 +1,20 @@
+{
+  "name": "Sydrey Enterprise",
+  "short_name": "Sydrey-Ent.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#004d40",
+  "icons": [
+    {
+      "src": "/icons/icon-logo.jpg",
+      "type": "image/jpg",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/icons/icon-logo.jpg",
+      "type": "image/jpg",
+      "sizes": "512x512"
+    }
+  ]
+}
