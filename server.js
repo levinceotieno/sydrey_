@@ -24,7 +24,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json()); // Parse JSON request bodies
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use("/.well-known", express.static("public/.well-known"));
+//app.use("/.well-known", express.static("public/.well-known"));
+app.use("/.well-known", express.static(path.join(__dirname, "public/.well-known"), {
+   setHeaders: (res, path, stat) => {
+      res.set("Content-Type", "application/json");
+   }
+}));
 
 // Set EJS as the view engine
 app.set('view engine', 'ejs');
