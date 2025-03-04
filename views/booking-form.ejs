@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book <%= service === 'education' ? 'Educational Session' : 'Agronomist Consultation' %> - Sydrey Enterprise</title>
+  <link rel="stylesheet" href="/styles/new-menu.css">
+  <link rel="stylesheet" href="/styles/products.css">
+  <style>
+    .form-container {
+      max-width: 600px;
+      margin: 100px auto 50px;
+      padding: 30px;
+      border: 1px solid #004d40;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      background-color: white;
+    }
+    
+    .page-title {
+      text-align: center;
+      color: #004d40;
+      margin-bottom: 30px;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: #004d40;
+      font-weight: bold;
+    }
+    
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+    
+    .booking-time {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .booking-time select {
+      flex: 1;
+    }
+    
+    .submit-btn {
+      background-color: #004d40;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      width: 100%;
+      font-size: 16px;
+      transition: background-color 0.3s;
+    }
+    
+    .submit-btn:hover {
+      background-color: #00695c;
+    }
+    
+    .service-description {
+      background-color: #e8f5e9;
+      border-left: 4px solid #004d40;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 0 5px 5px 0;
+    }
+    
+    .error-message {
+      color: #d32f2f;
+      background-color: #ffebee;
+      padding: 10px;
+      border-radius: 5px;
+      display: none;
+      margin-bottom: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div class="menu-backdrop" id="menu-backdrop"></div>
+
+  <!-- Navbar Section -->
+  <div class="navbar-container">
+    <div class="navbar">
+      <div class="menu-toggle" id="new-menu-toggle">☰</div>
+      <div class="logo">Sydrey Enterprise</div>
+      <div class="cart-profile">
+        <% if (user) { %>
+          <a href="/user/profile">
+             <% if (user.profile_photo) { %>
+                <img src="<%= user.profile_photo %>?v=<%= Date.now() %>" alt="Profile Photo" class="profile-image">
+             <% } else { %>
+                <img src="/images/default.png" alt="Profile Photo" class="profile-image">
+             <% } %>
+          </a>
+        <% } %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dropdown Menu -->
+  <nav class="new-menu" id="new-menu">
+    <ul>
+      <li><a href="/">Home</a></li>
+      <li><a href="/products">Products</a></li>
+      <li><a href="/bookings/services">Services</a></li>
+      <li><a href="/bookings/history">My Bookings</a></li>
+      <li><a href="/blogs">Blog</a></li>
+      <li><a href="/user/profile">Profile</a></li>
+      <% if (user && user.isAdmin) { %>
+        <li><a href="/admin" class="nav-link">Admin Dashboard</a></li>
+      <% } %>
+      <li>
+        <form method="POST" action="/auth/logout" class="logout-form">
+          <button class="logout-btn" type="submit">Logout</button>
+        </form>
+      </li>
+    </ul>
+  </nav>
+
+  <div class="form-container">
+    <h1 class="page-title">Book a <%= service === 'education' ? 'Educational Session' : 'Agronomist Consultation' %></h1>
+    
+    <div class="service-description">
+      <% if (service === 'education') { %>
+        <p><strong>Agricultural Education Session:</strong> Our expert instructors provide hands-on training in modern farming techniques, sustainable practices, and crop management. Sessions typically last 2 hours.</p>
+      <% } else { %>
+        <p><strong>Agronomist Consultation:</strong> Meet with our professional agronomists who will provide personalized advice on soil health, plant diseases, and optimal farming practices. Consultations typically last 1 hour.</p>
+      <% } %>
+    </div>
+    
+    <div class="error-message" id="error-container"></div>
+    
+    <form id="booking-form" action="/bookings/create" method="POST">
+      <input type="hidden" name="service" value="<%= service %>">
+      
+      <div class="form-group">
+        <label for="bookingDate">Select Date:</label>
+        <input type="date" id="bookingDate" name="bookingDate" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="bookingTime">Select Time:</label>
+        <select id="bookingTime" name="bookingTime" required>
+          <option value="">-- Select a time --</option>
+          <option value="09:00:00">9:00 AM</option>
+          <option value="10:00:00">10:00 AM</option>
+          <option value="11:00:00">11:00 AM</option>
+          <option value="13:00:00">1:00 PM</option>
+          <option value="14:00:00">2:00 PM</option>
+          <option value="15:00:00">3:00 PM</option>
+          <option value="16:00:00">4:00 PM</option>
+        </select>
+      </div>
+      
+      <button type="submit" class="submit-btn">Book Now</button>
+    </form>
+  </div>
+
+  <script src="/js/menu.js" defer></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Set minimum date to today
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const dd = String(today.getDate()).padStart(2, '0');
+      const formattedDate = `${yyyy}-${mm}-${dd}`;
+      
+      document.getElementById('bookingDate').min = formattedDate;
+      
+      // Handle form submission with AJAX
+      const form = document.getElementById('booking-form');
+      const errorContainer = document.getElementById('error-container');
+      
+      form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        errorContainer.style.display = 'none';
+        
+        try {
+          const formData = new FormData(form);
+          const response = await fetch('/bookings/create', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            body: JSON.stringify(Object.fromEntries(formData))
+          });
+          
+          const result = await response.json();
+          
+          if (!response.ok) {
+            throw new Error(result.message || 'Failed to create booking');
+          }
+          
+          // Redirect to booking history on success
+          window.location.href = '/bookings/history';
+        } catch (error) {
+          errorContainer.textContent = error.message;
+          errorContainer.style.display = 'block';
+        }
+      });
+    });
+  </script>
+</body>
+</html>

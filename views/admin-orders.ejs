@@ -1,4 +1,46 @@
-<main class="main-container">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Products</title>
+  <link rel="stylesheet" href="/styles/products.css">
+  <link rel="stylesheet" href="/styles/new-menu.css">
+  <link rel="stylesheet" href="/styles/admin-orders-mobile.css">
+</head>
+<body>
+
+  <div class="menu-backdrop" id="menu-backdrop"></div>
+
+  <!-- Navbar Section -->
+  <div class="navbar-container">
+    <div class="navbar">
+
+      <!-- ☰ Menu Icon -->
+      <div class="menu-toggle" id="new-menu-toggle">☰</div>
+
+      <!-- Brand Name -->
+      <div class="logo">Sydrey Enterprise</div>
+
+      <!-- Cart and Profile -->
+      <div class="cart-profile">
+      </div>
+    </div>
+  </div>
+
+  <!-- Dropdown Menu -->
+  <nav class="new-menu" id="new-menu">
+     <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/bookings/services">Services</a></li>
+        <li><a href="/user/profile">Profile</a></li>
+        <li><a href="/orders/history">My Orders</a></li>
+        <li><a href="/blogs">Blog</a></li>
+        <li><a href="/blogs/new" class="nav-link">Create Post</a></li>
+     </ul>
+  </nav>
+
+ <main class="main-container">
   <h1 class="page-title">Manage Orders</h1>
   <% if (orders.length > 0) { %>
     <div class="orders-container">
@@ -34,5 +76,8 @@
   <% } else { %>
     <p class="no-orders-message">No orders found.</p>
   <% } %>
-</main>
-<script src="/js/admin-ordersClient.js"></script>
+ </main>
+ <script src="/js/menu.js" defer></script>
+ <script src="/js/admin-ordersClient.js"></script>
+</body>
+</html>

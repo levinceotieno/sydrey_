@@ -4,48 +4,96 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Educational Blog</title>
+  <link rel="stylesheet" href="/styles/products.css">
+  <link rel="stylesheet" href="/styles/new-menu.css">
   <link rel="stylesheet" href="/styles/blogs.css">
 </head>
 <body>
-  <header class="navbar-container">
+
+  <div class="menu-backdrop" id="menu-backdrop"></div>
+
+  <!-- Navbar Section -->
+  <div class="navbar-container">
     <div class="navbar">
-      <button class="menu-toggle" id="menuToggle">☰</button>
-      <h1 class="logo">Sydrey Educational Blog</h1>
-      <nav class="nav-links">
-        <a href="/products" class="nav-link">Products</a>
-        <% if (user && user.isAdmin) { %>
-          <a href="/admin" class="nav-link">Admin Dashboard</a>
-	  <a href="/blogs/new" class="nav-link">Create Post</a>
+
+      <!-- ☰ Menu Icon -->
+      <div class="menu-toggle" id="new-menu-toggle">☰</div>
+
+      <!-- Brand Name -->
+      <div class="logo">Sydrey Enterprise</div>
+
+      <!-- Cart and Profile -->
+      <div class="cart-profile">
+        <!-- Profile Icon -->
+        <% if (user) { %>
+          <a href="/user/profile">
+            <% if (user.profile_photo) { %>
+              <img src="<%= user.profile_photo %>?v=<%= Date.now() %>" alt="Profile Photo" class="profile-image">
+            <% } else { %>
+              <img src="/images/default.png" alt="Profile Photo" class="profile-image">
+            <% } %>
+          </a>
         <% } %>
-      </nav>
-      <!--<button class="menu-toggle" id="menuToggle">☰</button> -->
+      </div>
     </div>
-  </header>
+  </div>
+
+  <!-- Dropdown Menu -->
+  <nav class="new-menu" id="new-menu">
+    <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/products" class="nav-link">Products</a></li>
+        <li><a href="/user/profile">Profile</a></li>
+        <li><a href="/orders/history">My Orders</a></li>
+        <% if (user && user.isAdmin) { %>
+          <li><a href="/admin" class="nav-link">Admin Dashboard</a></li>
+          <li><a href="/blogs/new" class="nav-link">Create Post</a></li>
+        <% } %>
+    </ul>
+  </nav>
 
   <main class="blog-page">
    <div class="blog-list">
     <% blogs.forEach(blog => { %>
       <article class="blog-card">
-        <h2 class="blog-title"><%= blog.title %></h2>
-        <p class="blog-content"><%= blog.content.slice(0, 100) %>...</p>
-        <p class="blog-meta">By <%= blog.author %> on <%= new Date(blog.created_at).toLocaleString() %></p>
-	<div class="button-container">
-          <a href="/blogs/<%= blog.id %>" class="btn">Read More</a>
-          <% if (user && user.isAdmin) { %>
-	    <a href="/blogs/<%= blog.id %>/edit" class="btn">Edit</a>
-            <form action="/blogs/<%= blog.id %>/delete" method="POST" class="inline-form">
-              <button type="submit" class="btn delete">Delete</button>
-            </form>
+        <div class="blog-card-content">
+          <% if (blog.cover_image) { %>
+            <div class="blog-thumbnail">
+              <img src="<%= blog.cover_image %>" alt="<%= blog.title %>" class="thumbnail-image">
+            </div>
           <% } %>
+          
+          <div class="blog-text">
+            <h2 class="blog-title"><%= blog.title %></h2>
+            <div class="blog-excerpt">
+              <% 
+                // Strip HTML tags for the excerpt
+                const tempDiv = blog.content.replace(/<[^>]*>/g, '');
+                const excerpt = tempDiv.length > 200 ? tempDiv.substring(0, 200) + '...' : tempDiv;
+              %>
+              <%= excerpt %>
+            </div>
+            <p class="blog-meta">By <%= blog.author %> on <%= new Date(blog.created_at).toLocaleString() %></p>
+            <div class="button-container">
+              <a href="/blogs/<%= blog.id %>" class="btn">Read More</a>
+              <% if (user && user.isAdmin) { %>
+                <a href="/blogs/<%= blog.id %>/edit" class="btn">Edit</a>
+                <form action="/blogs/<%= blog.id %>/delete" method="POST" class="inline-form">
+                  <button type="submit" class="btn delete">Delete</button>
+                </form>
+              <% } %>
+            </div>
+          </div>
         </div>
       </article>
     <% }) %>
    </div>
   </main>
 
+  <script src="/js/menu.js" defer></script>
   <script>
-    document.getElementById('menuToggle').addEventListener('click', () => {
-      document.querySelector('.nav-links').classList.toggle('visible');
+    document.getElementById('menuToggle')?.addEventListener('click', () => {
+      document.querySelector('.nav-links')?.classList.toggle('visible');
     });
   </script>
 </body>

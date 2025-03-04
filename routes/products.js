@@ -56,6 +56,7 @@ router.get('/cart', async (req, res) => {
    }
 });
 
+/**
 router.get('/:id', async (req, res) => {
    try {
       const [product] = await db.query('SELECT * FROM products WHERE id = ?', [req.params.id]);
@@ -64,6 +65,74 @@ router.get('/:id', async (req, res) => {
    } catch (error) {
       res.status(500).send('Error fetching product details');
    }
+});
+**/
+
+router.get('/search', async (req, res) => {
+  try {
+    const searchTerm = req.query.q;
+
+    if (!searchTerm) {
+	return res.redirect('/products'); // Redirect to all products if no search term
+    }
+
+    let products;
+
+    if (searchTerm.toLowerCase().includes('under') || searchTerm.toLowerCase().includes('below')) {
+	const priceMatch = searchTerm.match(/\d+/);
+	if (priceMatch) {
+	  const maxPrice = parseInt(priceMatch[0]);
+	  [products] = await db.query(
+	    'SELECT * FROM products WHERE price < ?',
+	    [maxPrice]
+	  );
+	}
+    } else if (searchTerm.toLowerCase().includes('over') || searchTerm.toLowerCase().includes('above')) {
+	// Extract number from "over X" or "above X" query
+	const priceMatch = searchTerm.match(/\d+/);
+	if (priceMatch) {
+	   const minPrice = parseInt(priceMatch[0]);
+	   [products] = await db.query(
+	     'SELECT * FROM products WHERE price > ?',
+	     [minPrice]
+	   );
+	}
+    } else {
+	[products] = await db.query(
+	  'SELECT * FROM products WHERE name LIKE ? OR description LIKE ?',
+	  [`%${searchTerm}%`, `%${searchTerm}%`]
+	);
+    }
+
+    if (!products) {
+      products = [];
+    }
+
+    const [featuredProducts] = await db.query('SELECT * FROM products LIMIT 5');
+    const userId = req.session.user?.id || null;
+    const cartCount = userId ? (await cartModel.getCart(userId)).length : 0;
+	      
+    res.render('products', { 
+	    products,
+	    featuredProducts,
+	    searchTerm,
+	    user: req.session.user, 
+	    cartCount
+    });
+  } catch (error) {
+    console.error('Error searching products:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+router.get('/:id', async (req, res) => {
+  try {
+    const [product] = await db.query('SELECT * FROM products WHERE id = ?', [req.params.id]);
+    if (product.length === 0) return res.status(404).send('Product not found');
+    res.render('product-details', { product: product[0], user: req.session.user });
+  } catch (error) {
+    res.status(500).send('Error fetching product details');
+  }
 });
 
 module.exports = router;

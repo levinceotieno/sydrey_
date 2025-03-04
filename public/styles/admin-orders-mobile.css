@@ -1,0 +1,211 @@
+.main-container {
+  padding: 15px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.page-title {
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+  font-size: 24px;
+}
+
+.orders-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.order-card {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.order-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+.order-card div {
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.order-card div strong {
+  font-weight: 600;
+  color: #555;
+}
+
+/* Style for status display */
+.order-card div[data-status] {
+  margin: 10px 0;
+}
+
+.order-card div[data-status] strong + span {
+  padding: 3px 8px;
+  border-radius: 3px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* Status colors */
+.status-pending {
+  background-color: #fff9c4;
+  color: #f57c00;
+}
+
+.status-processing {
+  background-color: #e3f2fd;
+  color: #1976d2;
+}
+
+.status-shipped {
+  background-color: #e8f5e9;
+  color: #388e3c;
+}
+
+.status-delivered {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+/* Form elements styling */
+.update-status-form {
+  margin: 15px 0;
+  padding-top: 10px;
+  border-top: 1px solid #eee;
+}
+
+.update-status-form label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: #555;
+  font-size: 14px;
+}
+
+.update-status-form select {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.update-button {
+  background-color: #004d40;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  width: 100%;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.update-button:hover {
+  background-color: #45a049;
+}
+
+.delete-order-btn {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-top: 10px;
+  font-size: 8px;
+  font-weight: 500;
+}
+
+.delete-order-btn:hover {
+  background-color: #d32f2f;
+}
+
+.no-orders-message {
+  text-align: center;
+  color: #757575;
+  font-size: 16px;
+  margin-top: 30px;
+}
+
+/* Mobile styles */
+@media (max-width: 768px) {
+  .page-title {
+    font-size: 20px;
+  }
+  
+  .orders-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .order-card {
+    padding: 12px;
+    font-size: 13px;
+  }
+  
+  .order-card div {
+    margin-bottom: 6px;
+    font-size: 13px;
+  }
+  
+  .update-status-form label, 
+  .update-status-form select {
+    font-size: 13px;
+  }
+  
+  .update-button, 
+  .delete-order-btn {
+    font-size: 13px;
+    padding: 7px 12px;
+  }
+}
+
+/* Small mobile screens */
+@media (max-width: 480px) {
+  .main-container {
+    padding: 10px;
+  }
+  
+  .page-title {
+    font-size: 18px;
+    margin-bottom: 15px;
+  }
+  
+  .order-card {
+    padding: 10px;
+  }
+  
+  .order-card div {
+    font-size: 12px;
+  }
+  
+  .update-status-form {
+    margin: 10px 0;
+  }
+  
+  .update-status-form label, 
+  .update-status-form select {
+    font-size: 12px;
+  }
+  
+  .update-button, 
+  .delete-order-btn {
+    font-size: 12px;
+    padding: 6px 10px;
+  }
+  
+  .no-orders-message {
+    font-size: 14px;
+  }
+}

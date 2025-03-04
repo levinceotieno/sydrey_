@@ -4,23 +4,60 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Orders - Sydreys Enterprise</title>
+  <link rel="stylesheet" href="/styles/products.css">
+  <link rel="stylesheet" href="/styles/new-menu.css">
   <link rel="stylesheet" href="/styles/orders.css">
 </head>
 <body>
-  <header>
-    <nav class="navbar">
-      <button class="menu-toggle" aria-label="Toggle navigation">
-        ☰
-      </button>
-      <a href="/" class="logo">Sydrey Enterprise</a>
-      <div class="nav-spacer"></div>
-      <div class="links">
-	<a href="/products" class="nav-link">Products</a>
-        <a href="/user/profile" class="nav-link">Profile</a>
-        <a href="/cart" class="nav-link">My Cart</a>
+
+  <div class="menu-backdrop" id="menu-backdrop"></div>
+
+  <!-- Navbar Section -->
+  <div class="navbar-container">
+    <div class="navbar">
+
+      <!-- ☰ Menu Icon -->
+      <div class="menu-toggle" id="new-menu-toggle">☰</div>
+
+      <!-- Brand Name -->
+      <div class="logo">Sydrey Enterprise</div>
+
+      <!-- Cart and Profile -->
+      <div class="cart-profile">
+	<!-- Cart Icon -->
+	<a href="/cart">
+	  <img src="/images/cart-icon.svg" alt="Shopping Cart" width="19" height="19" style="vertical-align: middle">
+	  <%= cartCount %>
+	</a>
+
+	<!-- Profile Icon -->
+	<% if (user) { %>
+	  <a href="/user/profile">
+	    <% if (user.profile_photo) { %>
+	      <img src="<%= user.profile_photo %>?v=<%= Date.now() %>" alt="Profile Photo" class="profile-image">
+	    <% } else { %>
+	      <img src="/images/default.png" alt="Profile Photo" class="profile-image">
+	    <% } %>
+	  </a>
+	<% } %>
       </div>
-    </nav>
-  </header>
+    </div>
+  </div>
+
+  <!-- Dropdown Menu -->
+  <nav class="new-menu" id="new-menu">
+    <ul>
+	<li><a href="/">Home</a></li>
+	</li><a href="/products" class="nav-link">Products</a></li>
+	<li><a href="/user/profile">Profile</a></li>
+	<li><a href="/orders/history">My Orders</a></li>
+	<li><a href="/blogs">Blog</a></li>
+	<% if (user && user.isAdmin) { %>
+	  <li><a href="/admin" class="nav-link">Admin Dashboard</a></li>
+	<% } %>
+    </ul>
+  </nav>
+
   <main class="main-container">
     <h1 class="page-title">My Orders</h1>
     <% if (orders.length > 0) { %>
@@ -48,6 +85,7 @@
       <p class="no-orders-message">No orders found. <a href="/products" class="shop-link">Start shopping now</a> to place your first order!</p>
     <% } %>
   </main>
+   <script src="/js/menu.js" defer></script>
   <script>
     document.querySelector('.menu-toggle').addEventListener('click', () => {
       document.querySelector('.links').classList.toggle('visible');

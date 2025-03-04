@@ -1,0 +1,187 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: white;
+  color: #004d40;
+  margin: 0;
+  padding: 0;
+}
+
+.admin-header {
+  text-align: center;
+  padding: 20px;
+  background-color: white;
+  border-bottom: 2px solid #006400;
+}
+
+.admin-header h1,
+.admin-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.admin-header .actions {
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.admin-header .actions .link-btn,
+.admin-header .actions .logout-btn {
+  color: white;
+  background-color: #004d40;
+  padding: 8px 15px;
+  border: none;
+  border-radius: 5px;
+  text-decoration: none;
+  margin: 5px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.admin-header .actions .logout-btn:hover,
+.admin-header .actions .link-btn:hover {
+  background-color: #004d40;
+}
+
+/* Add Product Section */
+.add-product {
+  padding: 20px;
+  text-align: center;
+}
+
+.add-product h3 {
+  margin-bottom: 15px;
+  font-size: 1.25rem;
+}
+
+.product-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.product-form input,
+.product-form textarea,
+.product-form select,
+.product-form button {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+.product-form button {
+  background-color: #004d40;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.product-form button:hover {
+  background-color: #004c2e;
+}
+
+/* Product List Section */
+.product-list {
+  padding: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.product-item {
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 15px;
+  text-align: center;
+  background-color: #f9f9f9;
+}
+
+.product-item img {
+  max-width: 100px;
+  margin: 10px 0;
+}
+
+.edit-form,
+.delete-form {
+  margin-top: 10px;
+}
+
+.edit-form input,
+.edit-form textarea,
+.edit-form select {
+  font-size: 0.9rem;
+}
+
+.edit-form button,
+.delete-btn {
+  padding: 10px;
+  font-size: 0.9rem;
+}
+
+.delete-btn {
+  background-color: #ff0000;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.delete-btn:hover {
+  background-color: #cc0000;
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+  .admin-header h1,
+  .admin-header h2 {
+    font-size: 1.2rem;
+  }
+
+  .product-form input,
+  .product-form textarea,
+  .product-form select,
+  .product-form button {
+    font-size: 0.9rem;
+  }
+
+  .product-item img {
+    max-width: 80px;
+  }
+
+  .edit-form input,
+  .edit-form textarea,
+  .edit-form select,
+  .delete-btn {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-header .actions {
+    flex-direction: column;
+  }
+
+  .admin-header .actions .link-btn,
+  .admin-header .actions .logout-btn {
+    font-size: 0.8rem;
+    padding: 5px 10px;
+  }
+
+  .product-form {
+    width: 100%;
+    padding: 0 10px;
+  }
+
+  .product-item {
+    padding: 10px;
+  }
+
+  .product-item img {
+    max-width: 70px;
+  }
+}

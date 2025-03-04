@@ -5,14 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Products</title>
   <link rel="stylesheet" href="/styles/products.css">
+  <link rel="stylesheet" href="/styles/new-menu.css">
+  <link rel="stylesheet" href="/styles/search.css">
 </head>
 <body>
+
+  <div class="menu-backdrop" id="menu-backdrop"></div>
+
   <!-- Navbar Section -->
   <div class="navbar-container">
     <div class="navbar">
 
       <!-- ☰ Menu Icon -->
-      <div class="menu-toggle">☰</div>
+      <div class="menu-toggle" id="new-menu-toggle">☰</div>
 
       <!-- Brand Name -->
       <div class="logo">Sydrey Enterprise</div>
@@ -21,46 +26,79 @@
       <div class="cart-profile">
         <!-- Cart Icon -->
         <a href="/cart">
-          <i class="fa fa-shopping-cart"></i> (<%= cartCount %>)
+	  <img src="/images/cart-icon.svg" alt="Shopping Cart" width="19" height="19" style="vertical-align: middle">
+	  <!-- <%= cartCount %> -->
         </a>
 
         <!-- Profile Icon -->
 	<% if (user) { %>
-	  <% if (!(user.profile_photo)) { %>
-	     <a href="/user/profile">
-	        <img src="/images/default.png" alt="Profile Photo" class="profile-image">
-	     </a>
-	  <% } %>
-	<% } %>
-	<% if (user && user.profile_photo) { %>
-	   <a href="/user/profile">
-	      <img src="<%= user.profile_photo %>?v=<%= Date.now() %>" alt="Profile Photo" class="profile-image">
-	   </a>
+	  <a href="/user/profile">
+	     <% if (user.profile_photo) { %>
+		<img src="<%= user.profile_photo %>?v=<%= Date.now() %>" alt="Profile Photo" class="profile-image">
+	     <% } else { %>
+		<img src="/images/default.png" alt="Profile Photo" class="profile-image">
+	     <% } %>
+	  </a>
 	<% } %>
       </div>
     </div>
-
-    <!-- Dropdown Menu -->
-    <div class="menu">
-      <% if (user) { %>
-        <a href="/">Home</a>
-        <a href="/user/profile">Profile</a>
-        <a href="/orders/history">My Orders</a>
-	<a href="/blogs">Blog</a>
-        <form method="POST" action="/auth/logout" class="logout-form">
-          <button class="logout-btn" type="submit">Logout</button>
-        </form>
-      <% } else { %>
-        <a href="/">Home</a>
-	<a href="/blogs">Blog</a>
-        <a href="/auth/login">Login</a>
-	<a href="/auth/register">Register</a>
-      <% } %> 
-    </div>
   </div>
 
+  <!-- Dropdown Menu -->
+  <nav class="new-menu" id="new-menu">
+     <ul>
+      <% if (user) { %>
+        <li><a href="/">Home</a></li>
+	<li><a href="/bookings/services">Services</a></li>
+	<li><a href="/user/profile">Profile</a></li>
+	<li><a href="/orders/history">My Orders</a></li>
+	<li><a href="/blogs">Blog</a></li>
+	<% if (user && user.isAdmin) { %>
+	  <li><a href="/admin" class="nav-link">Admin Dashboard</a></li>
+	  <li><a href="/blogs/new" class="nav-link">Create Post</a></li>
+	<% } %>
+	<li>
+          <form method="POST" action="/auth/logout" class="logout-form">
+            <button class="logout-btn" type="submit">Logout</button>
+          </form>
+	</li>
+      <% } else { %>
+        <li><a href="/">Home</a></li>
+	<li><a href="/bookings/services">Services</a></li>
+	<li><a href="/blogs">Blog</a></li>
+	<li><a href="/auth/login">Login</a></li>
+	<li><a href="/auth/register">Register</a></li>
+      <% } %>
+     </ul>
+  </nav>
+
+  <div class="search-container">
+    <form action="/products/search" method="GET" class="search-form">
+      <input 
+	type="text" 
+	name="q" 
+	placeholder="Search by name, desc, or price (e.g. 'under 500' or 'over 1000')"
+	value="<%= locals.searchTerm || '' %>"
+	class="search-input"
+	required
+       >
+       <button type="submit" class="search-button">
+         <i class="fa fa-search"></i> Search
+       </button>
+       <a href="/products" class="refresh-button">
+	 <i class="fa fa-refresh"></i> Clear
+       </a>
+    </form>
+  </div>
+  <% if (locals.searchTerm) { %>
+    <div class="search-results-info">
+      <h2>Search results for "<%= searchTerm %>"</h2>
+      <p><%= products.length %> product(s) found</p>
+    </div>
+  <% } %>
+
   <!-- Slideshow Section -->
-  <div class="slideshow-container">
+  <!-- <div class="slideshow-container">
     <h4>Featured Products</h4>
     <% featuredProducts.forEach((product, index) => { %>
       <div class="slide <%= index === 0 ? 'active' : '' %>">
@@ -78,7 +116,7 @@
     <% }) %>
     <button class="prev">&lt;</button>
     <button class="next">&gt;</button>
-  </div>
+  </div> -->
 
   <h3>Ginger, Tumeric, Garlic, And Seeds</h3>
   <div class="filter-buttons">
@@ -111,6 +149,7 @@
     <% }) %>
   </div>
 
+  <script src="/js/menu.js" defer></script>
   <script>
 
     // Filtering logic
@@ -126,29 +165,32 @@
     }
 
     // Toggle dropdown menu
-    document.querySelector('.menu-toggle').addEventListener('click', () => {
-      document.querySelector('.menu').classList.toggle('show');
-    });
+    //document.querySelector('.menu-toggle').addEventListener('click', () => {
+      //document.querySelector('.menu').classList.toggle('show');
+    //});
 
     // Slideshow logic
-    let currentSlide = 0;
-    const slides = document.querySelectorAll('.slide');
-    const showSlide = (index) => {
-      slides.forEach((slide, i) => slide.classList.toggle('active', i === index));
-    };
-    document.querySelector('.prev').addEventListener('click', () => {
-      currentSlide = (currentSlide > 0) ? currentSlide - 1 : slides.length - 1;
-      showSlide(currentSlide);
-    });
-    document.querySelector('.next').addEventListener('click', () => {
-      currentSlide = (currentSlide + 1) % slides.length;
-      showSlide(currentSlide);
-    });
+    const slidesContainer = document.querySelector('.slideshow-container');
+    if (slidesContainer) {
+      let currentSlide = 0;
+      const slides = document.querySelectorAll('.slide');
+      const showSlide = (index) => {
+        slides.forEach((slide, i) => slide.classList.toggle('active', i === index));
+      };
+      document.querySelector('.prev').addEventListener('click', () => {
+        currentSlide = (currentSlide > 0) ? currentSlide - 1 : slides.length - 1;
+        showSlide(currentSlide);
+      });
+      document.querySelector('.next').addEventListener('click', () => {
+        currentSlide = (currentSlide + 1) % slides.length;
+        showSlide(currentSlide);
+      });
 
-    setInterval(() => {
-       currentSlide = (currentSlide + 1) % slides.length;
-       showSlide(currentSlide);
-    }, 5000);
+      setInterval(() => {
+         currentSlide = (currentSlide + 1) % slides.length;
+         showSlide(currentSlide);
+      }, 5000);
+    }
 
     // Add to Cart functionality
     document.querySelectorAll('.add-to-cart-btn').forEach(button => {
@@ -163,8 +205,17 @@
           const data = await response.json();
           if (data.success) {
             alert('Product added to cart successfully!');
-            document.querySelector('.cart-profile .fa-shopping-cart').textContent = `(${data.cartCount})`;
-          } else {
+	    const cartLink = document.querySelector('.cart-profile a');
+	    if (cartLink) {
+	       // Find the text node and update it
+	       for (let node of cartLink.childNodes) {
+		  if (node.nodeType === Node.TEXT_NODE) {
+		     node.textContent = `(${data.cartCount})`;
+		     break;
+		  }
+	       }
+	    }
+	  } else {
             alert(data.message);
           }
         } catch (error) {

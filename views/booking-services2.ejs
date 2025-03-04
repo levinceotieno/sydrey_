@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book a Service - Sydrey Enterprise</title>
+  <link rel="stylesheet" href="/styles/new-menu.css">
+  <link rel="stylesheet" href="/styles/products.css">
+  <style>
+    .services-container {
+      max-width: 1200px;
+      margin: 80px auto 0;
+      padding: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 30px;
+      justify-content: center;
+    }
+
+    .service-card {
+      width: 300px;
+      border: 1px solid #004d40;
+      border-radius: 10px;
+      overflow: hidden;
+      transition: transform 0.3s ease;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .service-card:hover {
+      transform: translateY(-5px);
+    }
+
+    /* Image carousel styles */
+    .carousel {
+      position: relative;
+      width: 100%;
+      height: 200px;
+      overflow: hidden;
+    }
+
+    .carousel-inner {
+      display: flex;
+      transition: transform 0.5s ease;
+      height: 100%;
+    }
+
+    .carousel-item {
+      min-width: 100%;
+      height: 100%;
+    }
+
+    .service-img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+
+    /* Navigation arrows */
+    .carousel-control {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0, 0, 0, 0.5);
+      color: white;
+      border: none;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      font-size: 16px;
+      cursor: pointer;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .carousel-control:hover {
+      background: rgba(0, 0, 0, 0.8);
+    }
+
+    .carousel-control.prev {
+      left: 10px;
+    }
+
+    .carousel-control.next {
+      right: 10px;
+    }
+
+    /* Dots indicator */
+    .carousel-indicators {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 5px;
+    }
+
+    .indicator {
+      width: 8px;
+      height: 8px;
+      background-color: rgba(255, 255, 255, 0.5);
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    .indicator.active {
+      background-color: white;
+    }
+
+    .service-content {
+      padding: 15px;
+      text-align: center;
+    }
+
+    .service-title {
+      font-size: 20px;
+      color: #004d40;
+      margin-bottom: 10px;
+    }
+
+    .service-description {
+      color: #333;
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+
+    .book-btn {
+      background-color: #004d40;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.3s;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .book-btn:hover {
+      background-color: #00695c;
+    }
+
+    .page-title {
+      text-align: center;
+      color: #004d40;
+      margin-top: 60px;
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="menu-backdrop" id="menu-backdrop"></div>
+
+  <!-- Navbar Section -->
+  <div class="navbar-container">
+    <div class="navbar">
+      <!-- ☰ Menu Icon -->
+      <div class="menu-toggle" id="new-menu-toggle">☰</div>
+
+      <!-- Brand Name -->
+      <div class="logo">Sydrey Enterprise</div>
+
+      <!-- Cart and Profile -->
+      <div class="cart-profile">
+        <% if (user) { %>
+          <a href="/user/profile">
+             <% if (user.profile_photo) { %>
+                <img src="<%= user.profile_photo %>?v=<%= Date.now() %>" alt="Profile Photo" class="profile-image">
+             <% } else { %>
+                <img src="/images/default.png" alt="Profile Photo" class="profile-image">
+             <% } %>
+          </a>
+        <% } %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dropdown Menu -->
+  <nav class="new-menu" id="new-menu">
+    <ul>
+      <% if (user) { %>
+        <li><a href="/">Home</a></li>
+        <li><a href="/products">Products</a></li>
+        <li><a href="/bookings/history">My Bookings</a></li>
+        <li><a href="/orders/history">My Orders</a></li>
+        <li><a href="/blogs">Blog</a></li>
+        <li><a href="/user/profile">Profile</a></li>
+        <% if (user && user.isAdmin) { %>
+          <li><a href="/admin" class="nav-link">Admin Dashboard</a></li>
+          <li><a href="/bookings/admin" class="nav-link">Manage Bookings</a></li>
+        <% } %>
+        <li>
+          <form method="POST" action="/auth/logout" class="logout-form">
+            <button class="logout-btn" type="submit">Logout</button>
+          </form>
+        </li>
+      <% } else { %>
+        <li><a href="/">Home</a></li>
+        <li><a href="/products">Products</a></li>
+        <li><a href="/blogs">Blog</a></li>
+        <li><a href="/auth/login">Login</a></li>
+        <li><a href="/auth/register">Register</a></li>
+      <% } %>
+    </ul>
+  </nav>
+
+  <h1 class="page-title">Our Services</h1>
+
+  <div class="services-container">
+    <!-- Education Service Card with Image Carousel -->
+    <div class="service-card">
+      <div class="carousel" id="education-carousel">
+        <div class="carousel-inner">
+          <div class="carousel-item">
+            <img src="/images/education.jpg" alt="Agricultural Education" class="service-img">
+          </div>
+          <div class="carousel-item">
+            <img src="/images/education2.jpg" alt="Agricultural Education" class="service-img">
+          </div>
+          <div class="carousel-item">
+            <img src="/images/education3.jpg" alt="Agricultural Education" class="service-img">
+          </div>
+          <div class="carousel-item">
+            <img src="/images/education4.jpg" alt="Agricultural Education" class="service-img">
+          </div>
+        </div>
+        <button class="carousel-control prev" data-carousel="education-carousel">&lt;</button>
+        <button class="carousel-control next" data-carousel="education-carousel">&gt;</button>
+        <div class="carousel-indicators" id="education-indicators"></div>
+      </div>
+      <div class="service-content">
+        <h2 class="service-title">Agricultural Education</h2>
+        <p class="service-description">Learn modern farming techniques, sustainable practices, and how to maximize your crop yield through our expert-led educational sessions.</p>
+        <a href="/bookings/new?service=education" class="book-btn">Book a Session</a>
+      </div>
+    </div>
+
+    <!-- Agronomist Service Card with Image Carousel -->
+    <div class="service-card">
+      <div class="carousel" id="agronomist-carousel">
+        <div class="carousel-inner">
+          <div class="carousel-item">
+            <img src="/images/agronomist.jpg" alt="Agronomist Consultation" class="service-img">
+          </div>
+          <div class="carousel-item">
+            <img src="/images/agronomist2.jpg" alt="Agronomist Consultation" class="service-img">
+          </div>
+          <div class="carousel-item">
+            <img src="/images/agronomist3.jpg" alt="Agronomist Consultation" class="service-img">
+          </div>
+          <div class="carousel-item">
+            <img src="/images/agronomist4.jpg" alt="Agronomist Consultation" class="service-img">
+          </div>
+        </div>
+        <button class="carousel-control prev" data-carousel="agronomist-carousel">&lt;</button>
+        <button class="carousel-control next" data-carousel="agronomist-carousel">&gt;</button>
+        <div class="carousel-indicators" id="agronomist-indicators"></div>
+      </div>
+      <div class="service-content">
+        <h2 class="service-title">Agronomist Consultation</h2>
+        <p class="service-description">Get personalized advice from our professional agronomists who can help diagnose plant diseases, recommend soil improvements, and optimize your farming practices.</p>
+        <a href="/bookings/new?service=agronomist" class="book-btn">Book a Consultation</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/menu.js" defer></script>
+  
+  <!-- JavaScript for the image carousel -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialize all carousels
+      initCarousels();
+      
+      function initCarousels() {
+        const carousels = document.querySelectorAll('.carousel');
+        
+        carousels.forEach(carousel => {
+          const id = carousel.id;
+          const items = carousel.querySelectorAll('.carousel-item');
+          const indicators = document.getElementById(`${id}-indicators`);
+          
+          // Create indicators
+          items.forEach((_, index) => {
+            const dot = document.createElement('div');
+            dot.classList.add('indicator');
+            if (index === 0) dot.classList.add('active');
+            dot.dataset.slide = index;
+            dot.dataset.carousel = id;
+            dot.addEventListener('click', () => goToSlide(id, index));
+            indicators.appendChild(dot);
+          });
+          
+          // Set initial active slide
+          updateCarousel(id, 0);
+        });
+        
+        // Add event listeners to controls
+        document.querySelectorAll('.carousel-control').forEach(control => {
+          control.addEventListener('click', function() {
+            const carouselId = this.dataset.carousel;
+            const carousel = document.getElementById(carouselId);
+            const currentIndex = getCurrentIndex(carouselId);
+            const totalSlides = carousel.querySelectorAll('.carousel-item').length;
+            
+            if (this.classList.contains('prev')) {
+              const newIndex = (currentIndex - 1 + totalSlides) % totalSlides;
+              updateCarousel(carouselId, newIndex);
+            } else {
+              const newIndex = (currentIndex + 1) % totalSlides;
+              updateCarousel(carouselId, newIndex);
+            }
+          });
+        });
+      }
+      
+      function getCurrentIndex(carouselId) {
+        const indicators = document.querySelectorAll(`#${carouselId}-indicators .indicator`);
+        for (let i = 0; i < indicators.length; i++) {
+          if (indicators[i].classList.contains('active')) {
+            return parseInt(indicators[i].dataset.slide);
+          }
+        }
+        return 0;
+      }
+      
+      function updateCarousel(carouselId, index) {
+        const carousel = document.getElementById(carouselId);
+        const inner = carousel.querySelector('.carousel-inner');
+        const indicators = carousel.parentNode.querySelectorAll(`#${carouselId}-indicators .indicator`);
+        
+        // Update carousel position
+        inner.style.transform = `translateX(-${index * 100}%)`;
+        
+        // Update indicators
+        indicators.forEach((indicator, i) => {
+          if (i === index) {
+            indicator.classList.add('active');
+          } else {
+            indicator.classList.remove('active');
+          }
+        });
+      }
+      
+      function goToSlide(carouselId, index) {
+        updateCarousel(carouselId, index);
+      }
+      
+      // Auto-scroll carousels (optional)
+      const autoScroll = true;
+      const scrollInterval = 5000; // 5 seconds
+      
+      if (autoScroll) {
+        setInterval(() => {
+          document.querySelectorAll('.carousel').forEach(carousel => {
+            const id = carousel.id;
+            const currentIndex = getCurrentIndex(id);
+            const totalSlides = carousel.querySelectorAll('.carousel-item').length;
+            const newIndex = (currentIndex + 1) % totalSlides;
+            updateCarousel(id, newIndex);
+          });
+        }, scrollInterval);
+      }
+    });
+  </script>
+</body>
+</html>

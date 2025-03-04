@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Orders - Sydreys Enterprise</title>
+  <link rel="stylesheet" href="/styles/orders.css">
+</head>
+<body>
+  <header>
+    <nav class="navbar">
+      <button class="menu-toggle" aria-label="Toggle navigation">
+        ☰
+      </button>
+      <a href="/" class="logo">Sydrey Enterprise</a>
+      <div class="nav-spacer"></div>
+      <div class="links">
+	<a href="/products" class="nav-link">Products</a>
+        <a href="/user/profile" class="nav-link">Profile</a>
+        <a href="/cart" class="nav-link">My Cart</a>
+      </div>
+    </nav>
+  </header>
+  <main class="main-container">
+    <h1 class="page-title">My Orders</h1>
+    <% if (orders.length > 0) { %>
+      <div class="shop-now">
+        <a href="/products" class="shop-now-button">Shop Now</a>
+      </div>
+      <div class="orders-container">
+        <% orders.forEach(order => { %>
+	  <div class="order-card">
+	    <div><strong>Order ID:</strong> <%= order.id %></div>
+	    <div><strong>Product Name:</strong> <%= order.product_name %></div>
+	    <div><strong>Quantity:</strong> <%= order.quantity %></div>
+	    <div><strong>Total Price:</strong> Ksh. <%= parseFloat(order.total_price).toFixed(2) %></div>
+	    <div><strong>Delivery Address:</strong> <%= order.delivery_address %></div>
+	    <div><strong>Status:</strong> <%= order.status %></div>
+	    <div><strong>Delivery Date:</strong> <%= order.delivery_date %></div>
+	    <div><strong>Created At:</strong> <%= new Date(order.created_at).toLocaleString() %></div>
+	    <form action="/orders/delete/<%= order.id %>" method="POST" class="delete-order-form">
+	       <button type="submit" class="delete-button">Delete Order</button>
+	    </form>
+	  </div>
+        <% }); %>
+      </div>
+    <% } else { %>
+      <p class="no-orders-message">No orders found. <a href="/products" class="shop-link">Start shopping now</a> to place your first order!</p>
+    <% } %>
+  </main>
+  <script>
+    document.querySelector('.menu-toggle').addEventListener('click', () => {
+      document.querySelector('.links').classList.toggle('visible');
+    });
+  </script>
+</body>
+</html>

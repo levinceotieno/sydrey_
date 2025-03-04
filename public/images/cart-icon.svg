@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+  <!-- Cart body -->
+  <path d="M7 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM17 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" fill="#004d40"/>
+  <!-- Cart top and handle -->
+  <path d="M20 4H4v2h2.19l2.55 11.17c.14.62.69 1.07 1.33 1.07h8.86c.64 0 1.19-.45 1.33-1.07L22.81 6H20z" fill="#004d40"/>
+</svg>

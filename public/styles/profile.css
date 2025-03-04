@@ -100,14 +100,15 @@ h1 {
 
 .profile-section {
   text-align: center;
+  padding: 2rem;
 }
 
 .profile-image {
-  width: 150px;
-  height: 150px;
+  width: 150px !important;
+  height: 150px !important;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid #004d00;
+  border: 2px solid #004d00 !important;
   margin-bottom: 1rem;
 }
 

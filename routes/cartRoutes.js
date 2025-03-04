@@ -51,7 +51,8 @@ router.get('/', async (req, res) => {
       res.render('cart', { 
 	 cart: cartItems, 
 	 cartCount: cartItems.length, 
-	 userId // Pass userId to the EJS template 
+	 userId, // Pass userId to the EJS template
+	 user: req.session.user
       });
    } catch (error) {
       console.error('Error fetching cart:', error);

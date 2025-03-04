@@ -5,47 +5,6 @@ body {
   background-color: #f9f9f9;
 }
 
-header {
-  background-color: #004d40;
-  color: white;
-  padding: 10px 20px;
-}
-
-.header-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.logo {
-  font-size: 1.5em;
-  font-weight: bold;
-}
-
-nav {
-  display: flex;
-}
-
-.menu {
-  list-style: none;
-  display: flex;
-  gap: 15px;
-  padding: 0;
-}
-
-.menu li a {
-  color: white;
-  text-decoration: none;
-}
-
-.toggle-menu {
-  display: none;
-  background: none;
-  border: none;
-  color: white;
-  font-size: 1.5em;
-}
-
 main {
   margin: 20px;
   background: white;
@@ -77,21 +36,4 @@ form button {
 
 form button:hover {
   background-color: #00695c;
-}
-
-/* Responsive Styles */
-@media (max-width: 600px) {
-  .menu {
-    display: none;
-    flex-direction: column;
-    background-color: #004d40;
-  }
-
-  .menu li {
-    margin: 10px 0;
-  }
-
-  .toggle-menu {
-    display: block;
-  }
 }

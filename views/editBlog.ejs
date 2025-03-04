@@ -3,38 +3,122 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/styles/products.css">
+  <link rel="stylesheet" href="/styles/new-menu.css">
   <link rel="stylesheet" href="/styles/blogForm.css">
+  <!-- Add TinyMCE for rich text editing -->
+  <script src="https://cdn.tiny.cloud/1/77r8ge3rw81pd7xb1fq2u3zm5ccrlj1cipma4mqkz7xra291/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+  <script>
+    tinymce.init({
+      selector: '#content',
+      plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+      toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+      images_upload_url: '/blogs/upload-image',
+      automatic_uploads: true,
+      mobile: {
+	        menubar: true,
+	        toolbar: 'undo redo | bold italic underline | link image',
+      },
+      file_picker_types: 'image',
+      file_picker_callback: function (cb, value, meta) {
+        var input = document.createElement('input');
+        input.setAttribute('type', 'file');
+        input.setAttribute('accept', 'image/*');
+
+        input.onchange = function () {
+          var file = this.files[0];
+          
+          var reader = new FileReader();
+          reader.onload = function () {
+            var id = 'blobid' + (new Date()).getTime();
+            var blobCache =  tinymce.activeEditor.editorUpload.blobCache;
+            var base64 = reader.result.split(',')[1];
+            var blobInfo = blobCache.create(id, file, base64);
+            blobCache.add(blobInfo);
+
+            cb(blobInfo.blobUri(), { title: file.name });
+          };
+          reader.readAsDataURL(file);
+        };
+
+        input.click();
+      }
+    });
+  </script>
   <title>Edit Blog</title>
 </head>
 <body>
-  <header>
-    <div class="header-container">
-      <div class="logo">Sydrey Blogs</div>
-      <nav>
-        <ul class="menu">
-          <li><a href="/">Home</a></li>
-          <li><a href="/blogs">All Blogs</a></li>
-          <li><a href="/blogs/new">Create Blog</a></li>
-        </ul>
-      </nav>
-      <button class="menu-toggle" id="menuToggle">☰</button>
-      <!-- <button class="toggle-menu" id="toggleMenu">☰</button> -->
+
+  <div class="menu-backdrop" id="menu-backdrop"></div>
+
+  <!-- Navbar Section -->
+  <div class="navbar-container">
+    <div class="navbar">
+
+      <!-- ☰ Menu Icon -->
+      <div class="menu-toggle" id="new-menu-toggle">☰</div>
+
+      <!-- Brand Name -->
+      <div class="logo">Sydrey Enterprise</div>
+
+      <!-- Cart and Profile -->
+      <div class="cart-profile">
+        <!-- Profile Icon -->
+        <% if (user) { %>
+          <a href="/user/profile">
+            <% if (user.profile_photo) { %>
+              <img src="<%= user.profile_photo %>?v=<%= Date.now() %>" alt="Profile Photo" class="profile-image">
+            <% } else { %>
+              <img src="/images/default.png" alt="Profile Photo" class="profile-image">
+            <% } %>
+          </a>
+        <% } %>
+      </div>
     </div>
-  </header>
+  </div>
+
+  <!-- Dropdown Menu -->
+  <nav class="new-menu" id="new-menu">
+    <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/products" class="nav-link">Products</a></li>
+        <li><a href="/user/profile">Profile</a></li>
+        <li><a href="/orders/history">My Orders</a></li>
+        <li><a href="/blogs">Blogs</a></li>
+        <% if (user && user.isAdmin) { %>
+          <li><a href="/admin" class="nav-link">Admin Dashboard</a></li>
+          <li><a href="/blogs/new" class="nav-link">Create Post</a></li>
+        <% } %>
+    </ul>
+  </nav>
+
   <main>
     <h1>Edit Blog Post</h1>
-    <form action="/blogs/<%= blog.id %>" method="POST">
+    <form action="/blogs/<%= blog.id %>" method="POST" enctype="multipart/form-data">
       <label for="title">Title:</label>
       <input type="text" id="title" name="title" value="<%= blog.title %>" required>
+      
       <label for="content">Content:</label>
       <textarea id="content" name="content" required><%= blog.content %></textarea>
+      
+      <% if (blog.cover_image) { %>
+        <div class="current-cover">
+          <p>Current Cover Image:</p>
+          <img src="<%= blog.cover_image %>" alt="Current cover image" style="max-width: 200px;">
+        </div>
+      <% } %>
+      
+      <label for="cover_image">Update Cover Image (Optional):</label>
+      <input type="file" id="cover_image" name="cover_image" accept="image/*">
+      
       <button type="submit">Update Blog Post</button>
     </form>
   </main>
-  <!-- <script src="/scripts/toggleMenu.js"></script> -->
+
+  <script src="/js/menu.js" defer></script>
   <script>
-    document.getElementById('menuToggle').addEventListener('click', () => {
-       document.querySelector('.nav-links').classList.toggle('visible');
+    document.getElementById('menuToggle')?.addEventListener('click', () => {
+      document.querySelector('.nav-links')?.classList.toggle('visible');
     });
   </script>
 </body>

@@ -4,19 +4,40 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Profile - Sydrey Enterprise</title>
+  <link rel="stylesheet" href="/styles/products.css">
+  <link rel="stylesheet" href="/styles/new-menu.css">
   <link rel="stylesheet" href="/styles/profile.css">
 </head>
 <body>
-  <header class="navbar">
-    <button class="menu-toggle" aria-label="Toggle Menu">
-	<span class="menu-icon"></span>
-    </button>
-    <a href="/" class="logo">Sydrey Enterprise</a>
-    <nav class="nav-links">
-	<a href="/products" class="nav-link">Products</a>
-	<a href="/orders/history" class="nav-link">My Orders</a>
-    </nav>
-  </header>
+
+  <div class="menu-backdrop" id="menu-backdrop"></div>
+
+  <!-- Navbar Section -->
+  <div class="navbar-container">
+    <div class="navbar">
+
+      <!-- ☰ Menu Icon -->
+      <div class="menu-toggle" id="new-menu-toggle">☰</div>
+
+      <!-- Brand Name -->
+      <div class="logo">Sydrey Enterprise</div>
+
+      <!-- Cart -->
+      <div class="cart-profile">
+      </div>
+    </div>
+  </div>
+
+  <!-- Dropdown Menu -->
+  <nav class="new-menu" id="new-menu">
+    <ul>
+	<li><a href="/">Home</a></li>
+	</li><a href="/products" class="nav-link">Products</a></li>
+	<li><a href="/orders/history">My Orders</a></li>
+	<li><a href="/blogs">Blog</a></li>
+	<% if (user && user.isAdmin) { %>                                                           <li><a href="/admin" class="nav-link">Admin Dashboard</a></li>                          <% } %>
+    </ul>
+  </nav>
 
   <main class="profile-container">
     <h1>Welcome, <%= user.name %></h1>
@@ -49,6 +70,7 @@
     </div>
   </main>
 
+  <script src="/js/menu.js" defer></script>
   <script>
     const form = document.querySelector('form[action="/user/profile/photo"]');
     form.addEventListener('submit', () => {
@@ -57,12 +79,12 @@
       document.body.appendChild(spinner);
     });
 
-    const menuToggle = document.querySelector('.menu-toggle');
-    const navLinks = document.querySelector('.nav-links');
+    //const menuToggle = document.querySelector('.menu-toggle');
+    //const navLinks = document.querySelector('.nav-links');
 
-    menuToggle.addEventListener('click', () => {
-       navLinks.classList.toggle('open');
-    });
+    //menuToggle.addEventListener('click', () => {
+       //navLinks.classList.toggle('open');
+    //});
   </script>
 </body>
 </html>

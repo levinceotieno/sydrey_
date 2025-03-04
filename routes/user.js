@@ -13,8 +13,14 @@ router.use(authenticateUser);
 router.get('/profile', async (req, res) => {
   try {
     const [user] = await db.query('SELECT * FROM users WHERE id = ?', [req.user.id]);
+    const [cartResults] = await db.query(
+	'SELECT COUNT(*) as count FROM cart WHERE user_id = ?', 
+	    [req.user.id]
+    );
+    const cartCount = cartResults[0].count;
+
     if (user.length > 0) {
-	res.render('profile', { user: user[0] }); // Render profile.ejs with user data
+	res.render('profile', { user: user[0], cartCount: cartCount }); // Render profile.ejs with user data
     } else {
 	res.status(404).send('User not found');
     }

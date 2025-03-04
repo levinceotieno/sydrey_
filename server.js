@@ -16,6 +16,7 @@ const cartRoutes = require('./routes/cartRoutes');
 const blogRoutes = require('./routes/blogs');
 const { getOrdersFromDatabase } = require('./utils/database');
 const { authenticateUser, authorizeRole } = require('./middleware/auth');
+const bookingRoutes = require('./routes/bookingRoutes');
 
 const app = express();
 
@@ -54,8 +55,14 @@ app.use(session({
     cookie: {
 	secure: false, // Set to true if using HTTPS
 	maxAge: 24 * 60 * 60 * 1000, // 1 day
+	sameSite: 'Lax',
     },
 }));
+
+app.use((req, res, next) => {
+  console.log('Session:', req.session);
+  next();
+});
 
 /**
 // Database Connection
@@ -109,9 +116,19 @@ app.use((req, res, next) => {
    next();
 });
 
+app.use('/bookings', bookingRoutes);
+
 // Routes
-app.get('/', (req, res) => {
-  res.render('index'); // Render the homepage (index.ejs)
+app.get('/', async (req, res) => {
+  try {
+    // Fetch featured products from the database
+    const [featuredProducts] = await db.query('SELECT * FROM products LIMIT 200'); // Adjust the query as needed
+    // Render the index.ejs template and pass the featuredProducts data
+    res.render('index', { featuredProducts });
+  } catch (error) {
+    console.error('Error fetching featured products:', error);
+    res.status(500).send('Internal Server Error');
+  }
 });
 
 app.get('/checkout', (req, res) => {
