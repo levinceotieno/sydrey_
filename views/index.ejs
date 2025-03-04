@@ -8,52 +8,69 @@
   <link rel="manifest" href="/manifest.json">
   <style>
     /* Default styles for mobile devices */
-    body {
-      display: block;
+    body {                                                                                      display: block;
     }
 
     /* Styles for larger screens (e.g., laptops, desktops) */
     .large-screen-message {
-      display: none; /* Hide the message by default */
-      text-align: center;
-      padding: 20px;
-      font-size: 18px;
-      background-color: #f0f0f0;
+	display: none; /* Hide the message by default */
+	text-align: center;
+	padding: 20px;
+	font-size: 18px;
+	background-color: #f0f0f0;
     }
 
     /* Hide the main content for larger screens */
     @media screen and (min-width: 768px) {
-      body > *:not(.large-screen-message) {
-        display: none;
-      }
+	body > *:not(.large-screen-message) {
+	  display: none;
+	}
 
-      .large-screen-message {
-        display: block; /* Show the message for large screens */
-      }
+	.large-screen-message {
+	  display: block; /* Show the message for large screens */
+	}
     }
   </style>
   <script>
     // Check screen width immediately (before rendering the page)
     if (window.innerWidth >= 768) {
       document.write(`
-        <div class="large-screen-message">
-          This website is optimized for mobile devices only. Please access it from a smartphone. Large screeens will be supported soon.
-        </div>
+	<div class="large-screen-message">
+	   This website is optimized for mobile devices only. Please access it from a smartphone. Large screeens will be supported soon.
+	</div>
       `);
       // Stop further rendering of the page
       document.close();
       throw new Error("Page rendering stopped for large screens");
     }
   </script>
+  <script>
+    if ("serviceWorker" in navigator) {
+       navigator.serviceWorker.register("/sw.js")
+	 .then(() => console.log("Service Worker Registered"))
+	 .catch(err => console.log("Service Worker Registration Failed", err));
+    }
+  </script>
 </head>
 <body>
   <header class="main-header">
     <h1>Sydrey Enterprise</h1>
+    <p>Your Trusted Partner in Agriculture</p>
   </header>
-  <main class="main-content">
-    <!-- Slideshow Section -->
-    <div class="slideshow-container">
-      <h4>Featured Products</h4>
+
+  <!-- Promotional Banner -->
+  <section class="promo-banner">
+    <div class="promo-content">
+      <h2>Fresh Ginger, Turmeric, and Garlic</h2>
+      <p>Get the best quality products at wholesale prices!</p>
+      <a href="/products" class="btn promo-btn">Shop Now</a>
+    </div>
+  </section>
+
+  <!-- Slideshow Section -->
+  <section class="slideshow-container">
+    <h2>Featured Products</h2>
+    <div class="slides">
       <% featuredProducts.forEach((product, index) => { %>
         <div class="slide <%= index === 0 ? 'active' : '' %>">
           <img src="<%= product.image_url %>" alt="<%= product.name %>" class="slide-image">
@@ -68,41 +85,59 @@
           </div>
         </div>
       <% }) %>
-      <button class="prev">&lt;</button>
-      <button class="next">&gt;</button>
     </div>
+    <button class="prev">&lt;</button>
+    <button class="next">&gt;</button>
+  </section>
 
-    <section class="welcome-section">
-      <h2>Your One-Stop Shop for Ginger, Turmeric, and Garlic</h2>
-      <p>Fresh products, wholesale seeds, and expert farming advice.</p>
-      <div class="button-group">
-        <a href="/products" class="btn shop-btn">Shop Now</a>
-        <a href="/auth/login" class="btn login-btn">Login</a>
-        <a href="/auth/register" class="btn register-btn">Register</a>
-      </div>
-    </section>
-  </main>
+  <!-- Welcome Section -->
+  <section class="welcome-section">
+    <h2>Why Choose Sydrey Enterprise?</h2>
+    <p>We provide fresh, high-quality agricultural products and expert advice to help you grow your business.</p>
+    <div class="button-group">
+      <a href="/products" class="btn shop-btn">Explore Products</a>
+      <a href="/auth/login" class="btn login-btn">Login</a>
+      <a href="/auth/register" class="btn register-btn">Register</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
   <footer class="main-footer">
-    <p>© 2024 Sydreys Enterprise. All rights reserved.</p>
+    <p>© 2024 Sydrey Enterprise. All rights reserved.</p>
   </footer>
+
   <script>
     // Slideshow logic
     let currentSlide = 0;
     const slides = document.querySelectorAll('.slide');
+    const totalSlides = slides.length;
+
     const showSlide = (index) => {
-      slides.forEach((slide, i) => slide.classList.toggle('active', i === index));
+      // Remove the 'active' class from all slides
+      slides.forEach((slide) => slide.classList.remove('active'));
+
+      // Add the 'active' class to the current slide
+      slides[index].classList.add('active');
     };
-    document.querySelector('.prev').addEventListener('click', () => {
-      currentSlide = (currentSlide > 0) ? currentSlide - 1 : slides.length - 1;
-      showSlide(currentSlide);
-    });
+
+    // Show the first slide initially
+    showSlide(currentSlide);
+
+    // Event listener for the "Next" button
     document.querySelector('.next').addEventListener('click', () => {
-      currentSlide = (currentSlide + 1) % slides.length;
+      currentSlide = (currentSlide + 1) % totalSlides;
       showSlide(currentSlide);
     });
 
+    // Event listener for the "Prev" button
+    document.querySelector('.prev').addEventListener('click', () => {
+      currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+      showSlide(currentSlide);
+    });
+
+    // Automatically transition to the next slide every 5 seconds
     setInterval(() => {
-      currentSlide = (currentSlide + 1) % slides.length;
+      currentSlide = (currentSlide + 1) % totalSlides;
       showSlide(currentSlide);
     }, 5000);
   </script>

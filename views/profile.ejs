@@ -33,9 +33,14 @@
     <ul>
 	<li><a href="/">Home</a></li>
 	</li><a href="/products" class="nav-link">Products</a></li>
+	<li><a href="/bookings/services">Consultation</a></li>
 	<li><a href="/orders/history">My Orders</a></li>
 	<li><a href="/blogs">Blog</a></li>
-	<% if (user && user.isAdmin) { %>                                                           <li><a href="/admin" class="nav-link">Admin Dashboard</a></li>                          <% } %>
+	<% if (user && user.isAdmin) { %>
+	  <li><a href="/bookings/admin" class="nav-link">Manage Bookings</a></li>
+	  <li><a href="/admin" class="nav-link">Admin Dashboard</a></li>
+	  <li><a href="/blogs/new" class="nav-link">Create Post</a></li>
+	<% } %>
     </ul>
   </nav>
 

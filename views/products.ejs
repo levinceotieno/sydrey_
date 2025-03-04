@@ -49,11 +49,12 @@
      <ul>
       <% if (user) { %>
         <li><a href="/">Home</a></li>
-	<li><a href="/bookings/services">Services</a></li>
-	<li><a href="/user/profile">Profile</a></li>
+	<li><a href="/bookings/services">Consultation</a></li>
 	<li><a href="/orders/history">My Orders</a></li>
 	<li><a href="/blogs">Blog</a></li>
+	<li><a href="/user/profile">Profile</a></li>
 	<% if (user && user.isAdmin) { %>
+	  <li><a href="/bookings/admin" class="nav-link">Manage Bookings</a></li>
 	  <li><a href="/admin" class="nav-link">Admin Dashboard</a></li>
 	  <li><a href="/blogs/new" class="nav-link">Create Post</a></li>
 	<% } %>
@@ -64,7 +65,6 @@
 	</li>
       <% } else { %>
         <li><a href="/">Home</a></li>
-	<li><a href="/bookings/services">Services</a></li>
 	<li><a href="/blogs">Blog</a></li>
 	<li><a href="/auth/login">Login</a></li>
 	<li><a href="/auth/register">Register</a></li>

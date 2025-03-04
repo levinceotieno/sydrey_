@@ -42,8 +42,13 @@
     <ul>
         <li><a href="/">Home</a></li>
         <li><a href="/products" class="nav-link">Products</a></li>
-        <li><a href="/user/profile">Profile</a></li>
-        <li><a href="/orders/history">My Orders</a></li>
+	<% if (user) { %>
+          <li><a href="/user/profile">Profile</a></li>
+          <li><a href="/orders/history">My Orders</a></li>
+	<% } else { %>
+	  <li><a href="/auth/login">Login</a></li>
+	  <li><a href="/auth/register">Register</a></li>
+	<% } %>
         <% if (user && user.isAdmin) { %>
           <li><a href="/admin" class="nav-link">Admin Dashboard</a></li>
           <li><a href="/blogs/new" class="nav-link">Create Post</a></li>

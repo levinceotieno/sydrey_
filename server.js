@@ -7,6 +7,7 @@ const MySQLStore = require('express-mysql-session')(session);
 const bodyParser = require('body-parser');
 const fs = require('fs');
 require('dotenv').config();
+const flash = require('express-flash');
 const { router: authRoutes } = require('./routes/auth');
 const adminRoutes = require('./routes/admin');
 const userRoutes = require('./routes/user');
@@ -63,6 +64,8 @@ app.use((req, res, next) => {
   console.log('Session:', req.session);
   next();
 });
+
+app.use(flash());
 
 /**
 // Database Connection

@@ -74,20 +74,6 @@ a {
   margin-right: 30px;
 }
 
-.logout-form button {
-  border: none;
-  margin: 0;
-}
-
-/* Dropdown Menu */
-.logout-btn {
-  background-color: transparent;
-}
-
-.logout-form button:hover {
-  text-decoration: underline;
-}
-
 /* Slideshow Styles */
 .slideshow-container {
   margin-top: 800px;

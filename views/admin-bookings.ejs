@@ -3,11 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Bookings - Sydrey Enterprise</title>
+  <title>Admin Bookings - Sydrey Enterprise</title>
   <link rel="stylesheet" href="/styles/products.css">
   <link rel="stylesheet" href="/styles/new-menu.css">
+  <link rel="stylesheet" href="/styles/flash.css">
   <style>
-    /* Mobile-first styles */
+    /* General Styles */
     body {
       font-family: Arial, sans-serif;
       margin: 0;
@@ -16,8 +17,7 @@
     }
 
     .bookings-container {
-      margin-top: 22px;
-      width: 100%;
+      margin-top: 80px;
       padding: 20px;
       box-sizing: border-box;
     }
@@ -29,24 +29,7 @@
       font-size: 24px;
     }
 
-    .book-new-btn {
-      display: block;
-      width: 100%;
-      background-color: #004d40;
-      color: white;
-      padding: 10px;
-      border-radius: 5px;
-      text-align: center;
-      text-decoration: none;
-      margin-bottom: 20px;
-      font-weight: bold;
-      box-sizing: border-box;
-    }
-
-    .book-new-btn:hover {
-      background-color: #00695c;
-    }
-
+    /* Table Styles */
     .bookings-table {
       width: 100%;
       border-collapse: collapse;
@@ -118,7 +101,7 @@
       margin: 20px 0;
     }
 
-    /* Responsive adjustments for small screens */
+    /* Responsive Styles for Smartphones */
     @media (max-width: 600px) {
       .bookings-table th,
       .bookings-table td {
@@ -165,6 +148,15 @@
       .bookings-table th {
         display: none;
       }
+
+      .action-btn {
+        width: 100%;
+        margin-top: 5px;
+      }
+
+      .page-title {
+        font-size: 20px;
+      }
     }
   </style>
 </head>
@@ -195,8 +187,7 @@
     <ul>
       <li><a href="/">Home</a></li>
       <li><a href="/products">Products</a></li>
-      <li><a href="/bookings/services">Consultation</a></li>
-      <li><a href="/orders/history">My Orders</a></li>
+      <li><a href="/bookings/history">Bookings History</a></li>
       <li><a href="/blogs">Blog</a></li>
       <li><a href="/user/profile">Profile</a></li>
       <% if (user && user.isAdmin) { %>
@@ -207,15 +198,14 @@
   </nav>
 
   <div class="bookings-container">
-    <h1 class="page-title">My Bookings</h1>
-
-    <a href="/bookings/services" class="book-new-btn">Book a New Service</a>
+    <h1 class="page-title">Admin Bookings</h1>
 
     <% if (bookings && bookings.length > 0) { %>
       <table class="bookings-table">
         <thead>
           <tr>
             <th>ID</th>
+            <th>User</th>
             <th>Service</th>
             <th>Date</th>
             <th>Time</th>
@@ -227,6 +217,7 @@
           <% bookings.forEach(booking => { %>
             <tr>
               <td data-label="ID">#<%= booking.id %></td>
+              <td data-label="User"><%= booking.user_name %></td>
               <td data-label="Service"><%= booking.service === 'education' ? 'Agricultural Education' : 'Agronomist Consultation' %></td>
               <td data-label="Date"><%= new Date(booking.booking_date).toLocaleDateString() %></td>
               <td data-label="Time"><%= booking.booking_time.substring(0, 5) %></td>
@@ -236,22 +227,36 @@
                 </span>
               </td>
               <td data-label="Actions">
-                <% if (booking.status === 'pending') { %>
-                  <form action="/bookings/delete/<%= booking.id %>" method="POST" onsubmit="return confirm('Are you sure you want to cancel this booking?');">
-                    <button type="submit" class="action-btn delete-btn">Cancel</button>
-                  </form>
-                <% } %>
+                <form action="/bookings/admin/update-status/<%= booking.id %>" method="POST">
+                  <select name="status">
+                    <option value="pending" <%= booking.status === 'pending' ? 'selected' : '' %>>Pending</option>
+                    <option value="confirmed" <%= booking.status === 'confirmed' ? 'selected' : '' %>>Confirmed</option>
+                    <option value="completed" <%= booking.status === 'completed' ? 'selected' : '' %>>Completed</option>
+                  </select>
+                  <button type="submit" class="action-btn">Update</button>
+                </form>
               </td>
             </tr>
           <% }); %>
         </tbody>
       </table>
+      <% if (messages.success) { %>
+	<div class="alert alert-success">
+	  <%= messages.success %>
+	</div>
+      <% } %>
+      <% if (messages.error) { %>
+	<div class="alert alert-error">
+	  <%= messages.error %>
+	</div>
+      <% } %>
     <% } else { %>
       <div class="no-bookings">
-        <p>You have no bookings yet.</p>
+        <p>No bookings found.</p>
       </div>
     <% } %>
   </div>
-<script src="/js/menu.js" defer></script>
+
+  <script src="/js/menu.js" defer></script>
 </body>
 </html>

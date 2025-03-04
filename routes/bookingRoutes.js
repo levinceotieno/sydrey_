@@ -119,7 +119,8 @@ router.get('/admin', authenticateUser, authorizeRole('admin'), async (req, res) 
     const bookings = await bookingModel.getAllBookings();
     res.render('admin-bookings', { 
       user: req.session.user, 
-      bookings: bookings 
+      bookings: bookings,
+      messages: req.flash(),
     });
   } catch (error) {
     console.error('Error fetching admin bookings:', error);
@@ -134,26 +135,23 @@ router.post('/admin/update-status/:id', authenticateUser, authorizeRole('admin')
     const { status } = req.body;
     
     if (!status || !['pending', 'confirmed', 'completed'].includes(status)) {
-      return res.status(400).json({ message: 'Invalid status' });
+      req.flash('error', 'Invalid status');
+      return res.redirect('/bookings/admin');
     }
     
     const updated = await bookingModel.updateBookingStatus(bookingId, status);
     
     if (!updated) {
       return res.status(404).json({ message: 'Booking not found' });
+      return res.redirect('/bookings/admin')
     }
     
-    res.json({ 
-      message: 'Booking status updated successfully',
-      id: bookingId,
-      newStatus: status
-    });
+    return res.redirect('/bookings/admin')
+    req.flash('success', 'Booking status updated successfully');
   } catch (error) {
     console.error('Error updating booking status:', error);
-    res.status(500).json({ 
-      message: 'Failed to update booking status',
-      error: error.message
-    });
+    req.flash('error', 'Failed to update booking status');
+    res.redirect('/bookings/admin');
   }
 });
 
