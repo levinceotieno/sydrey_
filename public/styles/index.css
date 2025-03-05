@@ -45,16 +45,23 @@ body {
 }
 
 .promo-btn {
-  background-color: #ff9800;
+  background-color: #004d40;
   color: white;
-  padding: 10px 20px;
-  border-radius: 5px;
+  padding: 12px 25px;
+  border-radius: 25px;
   text-decoration: none;
   font-size: 1rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
 }
 
 .promo-btn:hover {
-  background-color: #e68900;
+  background-color: #00352b;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 8px rgba(0,0,0,0.3);
 }
 
 /* Slideshow Section */
@@ -170,18 +177,36 @@ body {
 
 .button-group {
   display: flex;
+  flex-direction: row;
   justify-content: center;
+  align-items: center;
   gap: 15px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  width: 100%;
+  overflow-x: auto;
+  padding: 10px 0;
 }
 
 .btn {
-  padding: 10px 20px;
+  display: flex;
+  flex-shrink: 0;
+  padding: 10px 15px;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  white-space: nowrap;
   text-decoration: none;
-  font-size: 1rem;
-  border-radius: 5px;
-  color: white;
-  transition: background-color 0.3s ease;
+  max-width: calc(33.33% - 15px);
+  background-color: #004d40; /* Maintaining the existing color */
+  color: white; /* White text color */
+  font-weight: bold; /* Bold text */
+  border-radius: 4px; /* Slight rounded corners for a modern look */
+  transition: all 0.3s ease;
+}
+
+.btn:hover {
+  background-color: #00362d; /* Slightly darker shade on hover */
+  transform: scale(1.05); /* Subtle scale effect on hover */
 }
 
 .shop-btn {
@@ -224,8 +249,8 @@ body {
   }
 
   .btn {
-    font-size: 0.9rem;
-    padding: 8px 15px;
+    font-size: 0.6rem;
+    padding: 4px 8px;
   }
 }
 
@@ -238,8 +263,31 @@ body {
     font-size: 1.2rem;
   }
 
-  .btn {
-    font-size: 0.8rem;
-    padding: 6px 10px;
+  .button-group {
+    gap: 10px;
   }
+
+  .btn {
+    font-size: 0.6rem;
+    padding: 8px 12px;
+  }
+}
+
+/* Vibrant Color Scheme */
+:root {
+  --primary-color: #004d40;
+  --secondary-color: #ff9800;
+  --text-color: #333;
+  --background-color: #f0f4f2;
+}
+
+body {
+  background-color: var(--background-color);
+}
+
+.promo-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
 }
