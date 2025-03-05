@@ -1,0 +1,120 @@
+body, h1, h2, p, a, input, button, select {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Body Styles */
+body {
+  font-family: Arial, sans-serif;
+  background-color: white;
+  color: #004d40;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Header */
+.register-header {
+  text-align: center;
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-bottom: 2px solid #004d40;
+}
+
+.register-header h1 {
+  font-size: 1.8rem;
+  color: #004d40;
+}
+
+/* Main Content */
+.register-main {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.register-container {
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 450px;
+  width: 100%;
+  text-align: center;
+}
+
+.register-form input,
+.register-form select {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+.register-form .btn {
+  width: 100%;
+  padding: 10px;
+  margin-top: 15px;
+  background-color: #004d40;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.register-form .btn:hover {
+  background-color: #004c2e;
+}
+
+/* Links */
+.login-link {
+  margin-top: 15px;
+}
+
+.login-link a {
+  text-decoration: none;
+  color: #004d40;
+  font-weight: bold;
+  transition: color 0.3s ease;
+}
+
+.login-link a:hover {
+  color: #004c2e;
+}
+
+/* Footer */
+.register-footer {
+  text-align: center;
+  background-color: #f9f9f9;
+  padding: 15px;
+  border-top: 2px solid #006400;
+  font-size: 0.9rem;
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+  .register-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .register-form input, .register-form select, .register-form .btn {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .register-header h1 {
+    font-size: 1.2rem;
+  }
+
+  .register-form input, .register-form select, .register-form .btn {
+    font-size: 0.8rem;
+  }
+}
