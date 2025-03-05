@@ -16,12 +16,20 @@ body {
 }
 
 .main-header h1 {
-  font-size: 2rem;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 3rem;
+  font-weight: 700;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 3px;
   margin-bottom: 10px;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
 }
 
 .main-header p {
-  font-size: 1rem;
+  font-family: 'Open Sans', sans-serif;
+  color: grey;
+  font-size: 1.2rem;
 }
 
 /* Promotional Banner */
