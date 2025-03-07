@@ -3,81 +3,163 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Products</title>
+  <title>Manage Orders - Sydrey Enterprise</title>
   <link rel="stylesheet" href="/styles/products.css">
   <link rel="stylesheet" href="/styles/new-menu.css">
-  <link rel="stylesheet" href="/styles/admin-orders-mobile.css">
+  <link rel="stylesheet" href="/styles/orders.css">
 </head>
 <body>
-
   <div class="menu-backdrop" id="menu-backdrop"></div>
 
   <!-- Navbar Section -->
   <div class="navbar-container">
     <div class="navbar">
-
-      <!-- ☰ Menu Icon -->
       <div class="menu-toggle" id="new-menu-toggle">☰</div>
-
-      <!-- Brand Name -->
       <div class="logo">Sydrey Enterprise</div>
-
-      <!-- Cart and Profile -->
       <div class="cart-profile">
+        <% if (user) { %>
+          <a href="/user/profile">
+            <% if (user.profile_photo) { %>
+              <img src="<%= user.profile_photo %>?v=<%= Date.now() %>" alt="Profile Photo" class="profile-image">
+            <% } else { %>
+              <img src="/images/default.png" alt="Profile Photo" class="profile-image">
+            <% } %>
+          </a>
+        <% } %>
       </div>
     </div>
   </div>
 
   <!-- Dropdown Menu -->
-  <nav class="new-menu" id="new-menu">
-     <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="/bookings/services">Services</a></li>
-        <li><a href="/user/profile">Profile</a></li>
-        <li><a href="/orders/history">My Orders</a></li>
-        <li><a href="/blogs">Blog</a></li>
-        <li><a href="/blogs/new" class="nav-link">Create Post</a></li>
-     </ul>
-  </nav>
+  <%- include('_menu') %>
 
- <main class="main-container">
-  <h1 class="page-title">Manage Orders</h1>
-  <% if (orders.length > 0) { %>
-    <div class="orders-container">
-      <% orders.forEach(order => { %>
-        <div class="order-card">
-          <div><strong>Order ID:</strong> <%= order.id %></div>
-          <div><strong>User ID:</strong> <%= order.user_id %></div>
-          <div><strong>Product Name:</strong> <%= order.product_name %></div>
-          <div><strong>Quantity:</strong> <%= order.quantity %></div>
-          <div><strong>Total Price:</strong> Ksh. <%= parseFloat(order.total_price).toFixed(2) %></div>
-          <div><strong>Delivery Address:</strong> <%= order.delivery_address %></div>
-	  <div data-status><strong>Status:</strong> <%= order.status %></div>
-          <div><strong>Delivery Date:</strong> <%= order.delivery_date %></div>
-          <div><strong>Created At:</strong> <%= new Date(order.created_at).toLocaleString() %></div>
-	  <form action="/admin/orders/update-status/<%= order.order_id %>" method="POST" class="update-status-form">
-            <label for="status_<%= order.id %>">Update Status:</label>
-            <select name="status" id="status_<%= order.id %>">
-              <option value="pending" <%= order.status === 'pending' ? 'selected' : '' %>>Pending</option>
-              <option value="processing" <%= order.status === 'processing' ? 'selected' : '' %>>Processing</option>
-              <option value="shipped" <%= order.status === 'shipped' ? 'selected' : '' %>>Shipped</option>
-              <option value="delivered" <%= order.status === 'delivered' ? 'selected' : '' %>>Delivered</option>
-            </select>
-            <button type="submit" class="update-button">Update</button>
-          </form>
-
-	  <!-- Delete Order Form -->
-	  <form action="/admin/orders/delete/<%= order.id %>" method="POST">
-    	     <button type="button" data-id="<%= order.order_id %>" class="delete-order-btn">Delete Order</button>
-	  </form>
-        </div>
-      <% }); %>
-    </div>
-  <% } else { %>
-    <p class="no-orders-message">No orders found.</p>
-  <% } %>
- </main>
- <script src="/js/menu.js" defer></script>
- <script src="/js/admin-ordersClient.js"></script>
+  <main class="main-container">
+    <h1 class="page-title">Manage Orders</h1>
+    
+    <% if (orders.length > 0) { %>
+      <div class="admin-dashboard-link">
+        <a href="/admin" class="admin-link">Back to Dashboard</a>
+      </div>
+      
+      <div class="order-status-filter">
+        <button class="status-filter-btn active" data-status="all">All Orders</button>
+        <button class="status-filter-btn" data-status="pending">Pending</button>
+        <button class="status-filter-btn" data-status="processing">Processing</button>
+        <button class="status-filter-btn" data-status="shipped">Shipped</button>
+        <button class="status-filter-btn" data-status="delivered">Delivered</button>
+      </div>
+      
+      <div class="orders-container admin-orders">
+        <% orders.forEach(order => { %>
+          <div class="order-card admin-order-card" data-status="<%= order.status %>">
+            <div class="order-header">
+              <div class="order-id"><strong>Order #<%= order.id %></strong></div>
+              <div class="order-status status-<%= order.status %>"><%= order.status %></div>
+            </div>
+            
+            <div class="order-details">
+              <div class="order-info">
+                <div><strong>User ID:</strong> <%= order.user_id %></div>
+                <div><strong>Created:</strong> <%= new Date(order.created_at).toLocaleString() %></div>
+                <div><strong>Total:</strong> Ksh. <%= parseFloat(order.total_price).toFixed(2) %></div>
+                <div><strong>Delivery:</strong> <%= order.delivery_date %></div>
+                <div><strong>Address:</strong> <%= order.delivery_address %></div>
+              </div>
+              
+              <div class="order-products-section">
+                <h3>Products</h3>
+                <div class="order-products">
+                  <% if (order.products && Array.isArray(order.products)) { %>
+                    <% order.products.forEach(product => { %>
+                      <div class="order-product">
+                        <span class="product-name"><%= product.product_name %></span>
+                        <div class="product-details">
+                          <span class="product-quantity">Qty: <%= product.quantity %></span>
+                          <span class="product-price">Ksh. <%= parseFloat(product.price).toFixed(2) %></span>
+                        </div>
+                      </div>
+                    <% }); %>
+                  <% } else { %>
+                    <p>No products found for this order.</p>
+                  <% } %>
+                </div>
+              </div>
+            </div>
+            
+            <div class="order-actions admin-actions">
+              <form action="/admin/orders/update-status/<%= order.order_id %>" method="POST" class="update-status-form">
+                <select name="status" id="status_<%= order.id %>" class="status-select">
+                  <option value="pending" <%= order.status === 'pending' ? 'selected' : '' %>>Pending</option>
+                  <option value="processing" <%= order.status === 'processing' ? 'selected' : '' %>>Processing</option>
+                  <option value="shipped" <%= order.status === 'shipped' ? 'selected' : '' %>>Shipped</option>
+                  <option value="delivered" <%= order.status === 'delivered' ? 'selected' : '' %>>Delivered</option>
+                </select>
+                <button type="submit" class="update-button">Update Status</button>
+              </form>
+              <button type="button" data-id="<%= order.order_id %>" class="delete-order-btn">Delete Order</button>
+            </div>
+          </div>
+        <% }); %>
+      </div>
+    <% } else { %>
+      <div class="no-orders-container">
+        <p class="no-orders-message">No orders found in the system.</p>
+        <a href="/admin" class="admin-link">Back to Dashboard</a>
+      </div>
+    <% } %>
+  </main>
+  
+  <script src="/js/menu.js" defer></script>
+  <script>
+    // Order status filtering
+    document.querySelectorAll('.status-filter-btn').forEach(button => {
+      button.addEventListener('click', () => {
+        // Update active button
+        document.querySelectorAll('.status-filter-btn').forEach(btn => {
+          btn.classList.remove('active');
+        });
+        button.classList.add('active');
+        
+        // Filter orders
+        const status = button.dataset.status;
+        document.querySelectorAll('.order-card').forEach(card => {
+          if (status === 'all' || card.dataset.status === status) {
+            card.style.display = 'block';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    });
+    
+    // Delete order confirmation
+    document.querySelectorAll('.delete-order-btn').forEach(button => {
+      button.addEventListener('click', async () => {
+        const orderId = button.dataset.id;
+        if (confirm('Are you sure you want to delete this order? This action cannot be undone.')) {
+          try {
+            const response = await fetch(`/admin/orders/delete/${orderId}`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              }
+            });
+            
+            if (response.ok) {
+              // Remove the order card from DOM
+              button.closest('.order-card').remove();
+              alert('Order deleted successfully');
+            } else {
+              const data = await response.json();
+              alert(`Error: ${data.message || 'Could not delete order'}`);
+            }
+          } catch (error) {
+            alert('Error deleting order');
+            console.error(error);
+          }
+        }
+      });
+    });
+  </script>
 </body>
 </html>

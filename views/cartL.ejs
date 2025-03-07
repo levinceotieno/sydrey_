@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Cart</title>
+  <link rel="stylesheet" href="/styles/products.css">
+  <link rel="stylesheet" href="/styles/new-menu.css">
+  <link rel="stylesheet" href="/styles/cart.css">
+</head>
+<body>
+  <div class="menu-backdrop" id="menu-backdrop"></div>
+
+  <!-- Navbar Section -->
+  <div class="navbar-container">
+    <div class="navbar">
+      <!-- ☰ Menu Icon -->
+      <div class="menu-toggle" id="new-menu-toggle">☰</div>
+
+      <!-- Brand Name -->
+      <div class="logo">Sydrey Enterprise</div>
+
+      <!-- Cart and Profile -->
+      <div class="cart-profile">
+        <!-- Cart Icon -->
+        <a href="/cart">
+          <img src="/images/cart-icon.svg" alt="Shopping Cart" width="19" height="19" style="vertical-align: middle">
+          <%= cartCount %>
+        </a>
+
+        <!-- Profile Icon -->
+        <% if (user) { %>
+          <a href="/user/profile">
+            <% if (user.profile_photo) { %>
+              <img src="<%= user.profile_photo %>?v=<%= Date.now() %>" alt="Profile Photo" class="profile-image">
+            <% } else { %>
+              <img src="/images/default.png" alt="Profile Photo" class="profile-image">
+            <% } %>
+          </a>
+        <% } %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dropdown Menu -->
+  <nav class="new-menu" id="new-menu">
+    <ul>
+      <% if (user) { %>
+        <li><a href="/">Home</a></li>
+        <li><a href="/products" class="nav-link">Products</a></li>
+        <li><a href="/bookings/services">Consultation</a></li>
+        <li><a href="/orders/history">My Orders</a></li>
+        <li><a href="/blogs">Blog</a></li>
+        <li><a href="/user/profile">Profile</a></li>
+        <% if (user && user.isAdmin) { %>
+          <li><a href="/bookings/admin" class="nav-link">Manage Bookings</a></li>
+          <li><a href="/admin" class="nav-link">Admin Dashboard</a></li>
+          <li><a href="/blogs/new" class="nav-link">Create Post</a></li>
+        <% } %>
+        <li>
+          <form method="POST" action="/auth/logout" class="logout-form">
+            <button class="logout-btn" type="submit">Logout</button>
+          </form>
+        </li>
+      <% } else { %>
+        <li><a href="/">Home</a></li>
+        <li><a href="/blogs">Blog</a></li>
+        <li><a href="/auth/login">Login</a></li>
+        <li><a href="/auth/register">Register</a></li>
+      <% } %>
+    </ul>
+  </nav>
+
+  <main class="content">
+    <h3>My Cart</h3>
+    <section class="cart-content">
+      <% if (cart.length > 0) { %>
+        <div class="products-container">
+          <% cart.forEach(item => { %>
+            <div class="product-card cart-item">
+              <img src="<%= item.image_url %>" alt="<%= item.name %>" class="product-image">
+              <h2><%= item.name %></h2>
+              <p>Quantity: 
+                <input 
+                  type="number" 
+                  value="<%= item.quantity %>" 
+                  id="quantity-<%= item.product_id %>" 
+                  min="1" 
+                  onchange="updateTotal('<%= item.product_id %>', <%= item.price %>)"
+                  class="quantity-input"
+                >
+              </p>
+              <p>Price per unit: Ksh <%= item.price %></p>
+              <p>Total: <span id="total-price-<%= item.product_id %>">Ksh <%= item.totalPrice %></span></p>
+              
+              <div class="cart-item-actions">
+                <button 
+                  onclick="updateCart('<%= item.product_id %>')" 
+                  class="add-to-cart-btn update-btn"
+                >
+                  Update
+                </button>
+                <button 
+                  onclick="removeFromCart('<%= item.product_id %>')" 
+                  class="add-to-cart-btn remove-btn"
+                >
+                  Remove
+                </button>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+
+        <div class="cart-summary">
+          <h3>Grand Total: <span id="grand-total">Ksh <%= cart.reduce((sum, item) => sum + item.totalPrice, 0) %></span></h3>
+          <button id="checkout-btn" class="add-to-cart-btn">Proceed to Checkout</button>
+        </div>
+      <% } else { %>
+        <p class="empty-cart-message">Your cart is empty. <a href="/products" class="add-to-cart-btn">Continue Shopping</a></p>
+      <% } %>
+    </section>
+
+    <!-- Checkout Modal -->
+    <div id="checkout-modal" class="modal hidden">
+      <div class="modal-content">
+        <span id="close-modal" class="close-btn">&times;</span>
+        <h2>Checkout</h2>
+        <form id="checkout-form">
+          <fieldset>
+            <legend>Delivery Location</legend>
+            <label>
+              <input type="radio" name="deliveryLocation" value="withinKenya" required>
+              Within Kenya
+            </label>
+            <label>
+              <input type="radio" name="deliveryLocation" value="outsideKenya">
+              Outside Kenya
+            </label>
+          </fieldset>
+          <label for="deliveryAddress">Delivery Address:</label>
+          <input type="text" id="deliveryAddress" name="deliveryAddress" placeholder="Enter your delivery address" required>
+          <button type="submit" class="add-to-cart-btn">Place Order</button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <script src="/js/menu.js" defer></script>
+  <script>
+    const userId = <%= JSON.stringify(userId) %>;
+  </script>
+  <script>
+    function updateTotal(productId, pricePerUnit) {
+      const quantityInput = document.getElementById(`quantity-${productId}`);
+      const totalPriceElement = document.getElementById(`total-price-${productId}`);
+      const grandTotalElement = document.getElementById('grand-total');
+
+      const quantity = parseInt(quantityInput.value, 10);
+
+      if (isNaN(quantity) || quantity < 1) {
+        quantityInput.value = 1;
+        return;
+      }
+
+      const totalPrice = quantity * pricePerUnit;
+      totalPriceElement.textContent = `Ksh ${totalPrice}`;
+
+      let grandTotal = 0;
+      const allTotalPriceElements = document.querySelectorAll('[id^="total-price-"]');
+      allTotalPriceElements.forEach(element => {
+        const price = parseFloat(element.textContent.replace('Ksh ', ''));
+        if (!isNaN(price)) {
+          grandTotal += price;
+        }
+      });
+
+      grandTotalElement.textContent = `Ksh ${grandTotal}`;
+    }
+  </script>
+  <script src="/js/orders.js"></script>
+  <script src="/js/checkout.js"></script>
+</body>
+</html>

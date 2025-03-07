@@ -3,19 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Cart</title>
+  <title>My Cart | Sydrey Enterprise</title>
   <link rel="stylesheet" href="/styles/products.css">
   <link rel="stylesheet" href="/styles/new-menu.css">
   <link rel="stylesheet" href="/styles/cart.css">
 </head>
 <body>
-
   <div class="menu-backdrop" id="menu-backdrop"></div>
 
   <!-- Navbar Section -->
   <div class="navbar-container">
     <div class="navbar">
-
       <!-- ☰ Menu Icon -->
       <div class="menu-toggle" id="new-menu-toggle">☰</div>
 
@@ -24,87 +22,138 @@
 
       <!-- Cart and Profile -->
       <div class="cart-profile">
-        <!-- Cart Icon -->
+        <!-- Cart Icon with Count -->
         <a href="/cart">
-	  <img src="/images/cart-icon.svg" alt="Shopping Cart" width="19" height="19" style="vertical-align: middle">
-	  <%= cartCount %>
-	</a>
+          <img src="/images/cart-icon.svg" alt="Shopping Cart" width="19" height="19" style="vertical-align: middle">
+          <span id="cart-count"><%= cartCount %></span>
+        </a>
 
-	<!-- Profile Icon -->
-	<% if (user) { %>
-	  <a href="/user/profile">
-	    <% if (user.profile_photo) { %>
-	      <img src="<%= user.profile_photo %>?v=<%= Date.now() %>" alt="Profile Photo" class="profile-image">
-	    <% } else { %>
-	      <img src="/images/default.png" alt="Profile Photo" class="profile-image">
-	    <% } %>
-	  </a>
-	<% } %>
+        <!-- Profile Icon -->
+        <% if (user) { %>
+          <a href="/user/profile">
+            <% if (user.profile_photo) { %>
+              <img src="<%= user.profile_photo %>?v=<%= Date.now() %>" alt="Profile Photo" class="profile-image">
+            <% } else { %>
+              <img src="/images/default.png" alt="Profile Photo" class="profile-image">
+            <% } %>
+          </a>
+        <% } %>
       </div>
     </div>
   </div>
 
   <!-- Dropdown Menu -->
-  <nav class="new-menu" id="new-menu">
-      <ul>
-	  <li><a href="/">Home</a></li>
-	  <li><a href="/products" class="nav-link">Products</a></li>
-	  <li><a href="/bookings/services">Bookings</a></li>
-	  <li><a href="/orders/history">My Orders</a></li>
-	  <li><a href="/blogs">Blog</a></li>
-	  <li><a href="/user/profile">Profile</a></li>
-	  <% if (user && user.isAdmin) { %>
-	    <li><a href="/admin" class="nav-link">Admin Dashboard</a></li>
-	    <li><a href="/blogs/new" class="nav-link">Create Post</a></li>
-	  <% } %>
-      </ul>
-  </nav>
+  <%- include('_menu') %>
 
-  <main>
+  <main class="content">
+    <h3 class="page-title">My Shopping Cart</h3>
     <section class="cart-content">
-      <% if (cart.length > 0) { %>
-        <ul class="cart-list">
+      <% if (cart && cart.length > 0) { %>
+        <div class="products-container">
           <% cart.forEach(item => { %>
-            <li class="cart-item">
-              <strong><%= item.name %></strong>
-              - Quantity:
-	      <input type="number" value="<%= item.quantity %>" id="quantity-<%= item.product_id %>" min="1" onchange="updateTotal('<%= item.product_id %>', <%= item.price %>)">
-              - Price per unit: Ksh <%= item.price %>
-	      - Total: <span id="total-price-<%= item.product_id %>">Ksh <%= item.totalPrice %></span>
-	      <div class="cart-summary">
-		  <h3>Grand Total: <span id="grand-total">Ksh <%= cart.reduce((sum, item) => sum + item.totalPrice, 0) %></span></h3>
-	      </div>
-              <button onclick="updateCart('<%= item.product_id %>')" class="update-btn">Update</button>
-              <button onclick="removeFromCart('<%= item.product_id %>')" class="remove-btn">Remove</button>
-            </li>
+	   <%= console.log(item) %>
+            <div class="product-card cart-item" data-product-id="<%= item.product_id %>">
+              <img src="<%= item.image_url || '/images/default-product.png' %>" alt="<%= item.name %>" class="product-image">
+              <h2 class="product-name"><%= item.name %></h2>
+              <div class="product-details">
+		<p>Price per unit: <span class="product-price">Ksh <%= parseFloat(item.price).toFixed(2) %> × </span></p>
+                <div class="quantity-control">
+                  <label for="quantity-<%= item.product_id %>">Quantity:</label>
+                  <div class="quantity-wrapper">
+                    <button type="button" class="quantity-btn" onclick="decrementQuantity('<%= item.product_id %>')">-</button>
+                    <input
+                      type="number"
+                      value="<%= item.quantity %>"
+                      id="quantity-<%= item.product_id %>"
+                      min="1"
+                      onchange="updateTotal('<%= item.product_id %>', <%= item.price %>)"
+                      class="quantity-input"
+                    >
+                    <button type="button" class="quantity-btn" onclick="incrementQuantity('<%= item.product_id %>')">+</button>
+                  </div>
+                </div>
+                <p class="item-total">Total: <span id="total-price-<%= item.product_id %>">Ksh <%= (item.price * item.quantity).toFixed(2) %></span></p>
+              </div>
+
+              <div class="cart-item-actions">
+                <button
+                  onclick="updateCart('<%= item.product_id %>')"
+                  class="add-to-cart-btn update-btn"
+                >
+                  Update
+                </button>
+                <button
+                  onclick="removeFromCart('<%= item.product_id %>')"
+                  class="add-to-cart-btn remove-btn"
+                >
+                  Remove
+                </button>
+              </div>
+            </div>
           <% }) %>
-        </ul>
-        <button id="checkout-btn" class="primary-btn">Checkout</button>
+        </div>
+
+        <div class="cart-summary">
+          <h3>Order Summary</h3>
+          <div class="summary-details">
+            <div class="summary-row">
+              <span>Subtotal (<%= cart.reduce((sum, item) => sum + parseInt(item.quantity, 10), 0) %> items):</span>
+	      <span>Ksh <%= grandTotal.toFixed(2) %></span>
+            </div>
+            <div class="summary-row">
+              <span>Shipping:</span>
+              <span id="shipping-cost">To be calculated</span>
+            </div>
+            <div class="summary-row total-row">
+              <span>Grand Total:</span>
+              <span id="grand-total">Ksh <%= grandTotal.toFixed(2) %></span>
+            </div>
+          </div>
+          <button id="checkout-btn" class="add-to-cart-btn checkout-btn">Proceed to Checkout</button>
+          <a href="/products" class="continue-shopping-btn">Continue Shopping</a>
+        </div>
       <% } else { %>
-        <p>Your cart is empty.</p>
+        <div class="empty-cart">
+          <div class="empty-cart-icon">🛒</div>
+          <p class="empty-cart-message">Your cart is empty.</p>
+          <p class="empty-cart-subtext">Looks like you haven't added any products to your cart yet.</p>
+          <a href="/products" class="add-to-cart-btn continue-shopping-btn">Continue Shopping</a>
+        </div>
       <% } %>
     </section>
 
-    <!-- Modal -->
+    <!-- Checkout Modal -->
     <div id="checkout-modal" class="modal hidden">
       <div class="modal-content">
         <span id="close-modal" class="close-btn">&times;</span>
-        <h2>Checkout</h2>
+        <h2>Complete Your Order</h2>
         <form id="checkout-form">
+          <input type="hidden" name="userId" value="<%= userId %>">
+          
           <fieldset>
             <legend>Delivery Location</legend>
-            <label>
-              <input type="radio" name="deliveryLocation" value="withinKenya" required>
-              Within Kenya
-            </label>
-            <label>
-              <input type="radio" name="deliveryLocation" value="outsideKenya">
-              Outside Kenya
-            </label>
+            <div class="radio-group">
+              <label class="radio-label">
+                <input type="radio" name="deliveryLocation" value="withinKenya" required>
+                <span class="radio-text">Within Kenya (3 days delivery)</span>
+              </label>
+              <label class="radio-label">
+                <input type="radio" name="deliveryLocation" value="outsideKenya">
+                <span class="radio-text">Outside Kenya (7 days delivery)</span>
+              </label>
+            </div>
           </fieldset>
-          <label for="deliveryAddress">Delivery Address:</label>
-          <input type="text" id="deliveryAddress" name="deliveryAddress" placeholder="Enter your delivery address" required>
-          <button type="submit" class="primary-btn">Place Order</button>
+          
+          <div class="form-group">
+            <label for="deliveryAddress">Delivery Address:</label>
+            <textarea id="deliveryAddress" name="deliveryAddress" placeholder="Enter your complete delivery address" required></textarea>
+          </div>
+          
+          <div class="order-total">
+	     <p>Total Amount: <strong id="checkout-grand-total">Ksh <%= grandTotal.toFixed(2) %></strong></p>
+          </div>
+          
+          <button type="submit" class="add-to-cart-btn place-order-btn">Place Order</button>
         </form>
       </div>
     </div>
@@ -112,47 +161,213 @@
 
   <script src="/js/menu.js" defer></script>
   <script>
-     const userId = <%= JSON.stringify(userId) %>;
-  </script>
-  <script>
-
+    const userId = <%= JSON.stringify(userId) %>;
+    
     function updateTotal(productId, pricePerUnit) {
-	const quantityInput = document.getElementById(`quantity-${productId}`);
-	const totalPriceElement = document.getElementById(`total-price-${productId}`);
-	const grandTotalElement = document.getElementById('grand-total');
+      const quantityInput = document.getElementById(`quantity-${productId}`);
+      const totalPriceElement = document.getElementById(`total-price-${productId}`);
 
-	const quantity = parseInt(quantityInput.value, 10);
-	
-	if (isNaN(quantity) || quantity < 1) {
-	   quantityInput.value = 1; // Reset to 1 if the value is invalid
-	   return;
-	}
+      const quantity = parseInt(quantityInput.value, 10);
+      
+      if (isNaN(quantity) || quantity < 1) {
+        quantityInput.value = 1;
+        return;
+      }
+      
+      const totalPrice = quantity * pricePerUnit;
+      totalPriceElement.textContent = `Ksh ${totalPrice.toFixed(2)}`;
+      
+      let grandTotal = 0;
+      const allTotalPriceElements = document.querySelectorAll('[id^="total-price-"]');
+      allTotalPriceElements.forEach(element => {
+        const price = parseFloat(element.textContent.replace('Ksh ', ''));
+        if (!isNaN(price)) {
+          grandTotal += price;
+        }
+      });
+      
+      document.getElementById('grand-total').textContent = `Ksh ${grandTotal.toFixed(2)}`;
+      // Update checkout modal
+      const checkoutGrandTotal = document.getElementById('checkout-grand-total');
+      if (checkoutGrandTotal) {
+	checkoutGrandTotal.textContent = `Ksh ${grandTotal.toFixed(2)}`;
+      }
+      // Update the subtotal item count
+      updateSubtotalItemCount();
+    }
+    
+    function incrementQuantity(productId) {
+      const input = document.getElementById(`quantity-${productId}`);
+      input.value = parseInt(input.value) + 1;
+      input.dispatchEvent(new Event('change'));
+    }
+    
+    function decrementQuantity(productId) {
+      const input = document.getElementById(`quantity-${productId}`);
+      if (parseInt(input.value) > 1) {
+        input.value = parseInt(input.value) - 1;
+        input.dispatchEvent(new Event('change'));
+      }
+    }
+    
+    function updateCart(productId) {
+      const quantity = document.getElementById(`quantity-${productId}`).value;
+      console.log('Updating cart:', { productId, quantity });
 
-	const totalPrice = quantity * pricePerUnit;
+      fetch('/cart/update', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          productId,
+          quantity
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          document.getElementById('cart-count').textContent = data.cartCount;
+	  updateSubtotalItemCount();
+          alert(data.message);
+        } else {
+          alert(data.message || 'Failed to update cart');
+        }
+      })
+      .catch(error => {
+        console.error('Error updating cart:', error);
+        alert('An error occurred while updating the cart');
+      });
+    }
+    
+    function removeFromCart(productId) {
+      if (confirm('Are you sure you want to remove this item from your cart?')) {
+        fetch('/cart/remove', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            productId
+          })
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            document.getElementById('cart-count').textContent = data.cartCount;
+            document.querySelector(`.cart-item[data-product-id="${productId}"]`).remove();
+            alert(data.message);
+            
+            // Refresh page if cart is now empty
+            if (data.cartCount === 0) {
+              window.location.reload();
+            } else {
+              // Update grand total
+              updateCartTotals();
+            }
+          } else {
+            alert(data.message || 'Failed to remove item from cart');
+          }
+        })
+        .catch(error => {
+          console.error('Error removing from cart:', error);
+          alert('An error occurred while removing the item from cart');
+        });
+      }
+    }
+    
+    function updateCartTotals() {
+      let grandTotal = 0;
+      const allTotalPriceElements = document.querySelectorAll('[id^="total-price-"]');
+      allTotalPriceElements.forEach(element => {
+        const price = parseFloat(element.textContent.replace('Ksh ', ''));
+        if (!isNaN(price)) {
+          grandTotal += price;
+        }
+      });
+      
+      document.getElementById('grand-total').textContent = `Ksh ${grandTotal.toFixed(2)}`;
+      // Update checkout modal
+      const checkoutGrandTotal = document.getElementById('checkout-grand-total');
+      if (checkoutGrandTotal) {
+	checkoutGrandTotal.textContent = `Ksh ${grandTotal.toFixed(2)}`;
+      }
+    }
+   
+    function updateSubtotalItemCount() {
+      let totalItems = 0;
+      const quantityInputs = document.querySelectorAll('[id^="quantity-"]');
 
-	// Update the total price for this product
-	totalPriceElement.textContent = `Ksh. ${totalPrice}`;
+      quantityInputs.forEach(input => {
+	const quantity = parseInt(input.value, 10) || 0;
+	totalItems += quantity;
+      });
 
-	// Update the grand total
-	let grandTotal = 0;
-	const allTotalPriceElements = document.querySelectorAll('[id^="total-price-"]');
-	allTotalPriceElements.forEach(element => {
-	    const price = parseFloat(element.textContent.replace('Ksh. ', ''));
-	    if (!isNaN(price)) {
-		grandTotal += price;
-	    }
-	});
-
-	grandTotalElement.textContent = `Ksh. ${grandTotal}`;
+      const subtotalElement = document.querySelector('.summary-details .summary-row:first-child span:first-child');
+      if (subtotalElement) {
+	subtotalElement.textContent = `Subtotal (${totalItems} items):`;
+      }
     }
 
-    // Toggle menu
-    //document.getElementById('toggle-menu').addEventListener('click', () => {
-      //document.querySelector('.nav-links').classList.toggle('visible');
-    //});
+    // Checkout Modal Functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      const checkoutBtn = document.getElementById('checkout-btn');
+      const checkoutModal = document.getElementById('checkout-modal');
+      const closeModal = document.getElementById('close-modal');
+      const checkoutForm = document.getElementById('checkout-form');
+      
+      if (checkoutBtn) {
+        checkoutBtn.addEventListener('click', function() {
+          checkoutModal.classList.remove('hidden');
+        });
+      }
+      
+      if (closeModal) {
+        closeModal.addEventListener('click', function() {
+          checkoutModal.classList.add('hidden');
+        });
+      }
+      
+      window.addEventListener('click', function(event) {
+        if (event.target === checkoutModal) {
+          checkoutModal.classList.add('hidden');
+        }
+      });
+      
+      if (checkoutForm) {
+        checkoutForm.addEventListener('submit', function(event) {
+          event.preventDefault();
+          
+          const formData = new FormData(checkoutForm);
+          const orderData = {
+            userId: formData.get('userId'),
+            deliveryLocation: formData.get('deliveryLocation'),
+            deliveryAddress: formData.get('deliveryAddress')
+          };
+          
+          fetch('/cart/checkout', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(orderData)
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.message.includes('success')) {
+              alert('Your order has been placed successfully!');
+              window.location.href = '/orders/history'; // Redirect to order history
+            } else {
+              alert(data.message || 'Failed to place order');
+            }
+          })
+          .catch(error => {
+            console.error('Error placing order:', error);
+            alert('An error occurred while placing your order');
+          });
+        });
+      }
+    });
   </script>
-  <!-- <script src="/js/toggle.js"></script> -->
-  <script src="/js/orders.js"></script>
-  <script src="/js/checkout.js"></script>
 </body>
 </html>

@@ -1,0 +1,80 @@
+<nav class="new-menu" id="new-menu">
+    <ul>
+        <!-- Home -->
+        <li><a href="/">Home</a></li>
+
+        <!-- Products -->
+        <div class="menu-category">
+            <div class="menu-category-title">Products</div>
+            <div class="menu-category-links">
+                <li><a href="/products">Shop Products</a></li>
+                <% if (user && user.isAdmin) { %>
+                    <li><a href="/admin/products">Manage Products</a></li>
+                <% } %>
+            </div>
+        </div>
+
+        <!-- Orders -->
+        <div class="menu-category">
+            <div class="menu-category-title">Orders</div>
+            <div class="menu-category-links">
+                <li><a href="/orders/history">My Orders</a></li>
+                <% if (user && user.isAdmin) { %>
+                    <li><a href="/admin/orders">Manage Orders</a></li>
+                <% } %>
+            </div>
+        </div>
+
+        <!-- Bookings -->
+        <div class="menu-category">
+            <div class="menu-category-title">Bookings</div>
+            <div class="menu-category-links">
+                <li><a href="/bookings/services">Book a Service</a></li>
+                <li><a href="/bookings/history">Booking History</a></li>
+                <% if (user && user.isAdmin) { %>
+                    <li><a href="/bookings/admin">Manage Bookings</a></li>
+                <% } %>
+            </div>
+        </div>
+
+        <!-- Blogs -->
+        <div class="menu-category">
+            <div class="menu-category-title">Blogs</div>
+            <div class="menu-category-links">
+                <li><a href="/blogs">View Blogs</a></li>
+                <% if (user && user.isAdmin) { %>
+                    <li><a href="/blogs/new">Create Blog</a></li>
+                <% } %>
+            </div>
+        </div>
+
+        <!-- Profile -->
+        <% if (user) { %>
+            <div class="menu-category">
+                <div class="menu-category-title">Account</div>
+                <div class="menu-category-links">
+                    <li><a href="/user/profile">Profile</a></li>
+                    <li>
+                        <form method="POST" action="/auth/logout" class="logout-form">
+                            <button type="submit" class="logout-btn">Logout</button>
+                        </form>
+                    </li>
+                </div>
+            </div>
+        <% } else { %>
+            <li><a href="/auth/login">Login</a></li>
+            <li><a href="/auth/register">Register</a></li>
+        <% } %>
+
+        <!-- Admin Dashboard -->
+        <% if (user && user.isAdmin) { %>
+            <div class="menu-category">
+                <div class="menu-category-title">Admin</div>
+                <div class="menu-category-links">
+                    <li><a href="/admin">Dashboard</a></li>
+                    <li><a href="/admin/users">Manage Users</a></li>
+                </div>
+            </div>
+        <% } %>
+    </ul>
+</nav>

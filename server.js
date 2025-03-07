@@ -67,33 +67,6 @@ app.use((req, res, next) => {
 
 app.use(flash());
 
-/**
-// Database Connection
-let db;
-(async () => {
-  try {
-    db = await mysql.createConnection({
-      host: process.env.DB_HOST,
-      user: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
-      ssl: {
-	    ca: fs.readFileSync(path.join(__dirname, 'config', 'ca.pem')), // Use CA cert
-	    rejectUnauthorized: true,
-      },
-    });
-    console.log('Connected to the database');
-  } catch (err) {
-    console.error('Database connection failed:', err);
-    process.exit(1);
-  }
-})();
-**/
-
-//app.use(express.static(path.join(__dirname, 'public')));
-//app.use(express.json());
-//app.use(express.urlencoded({ extended: true }));
-
 // Middleware to inject `db` into requests
 app.use((req, res, next) => {
   req.db = db; // Attach the database connection to the request object
@@ -159,25 +132,37 @@ app.get('/admin/orders', async (req, res) => {
   try {
      const [orders] = await db.query(`
 	SELECT 
-	  o.id AS order_id,
-	  o.user_id,
-	  u.name AS customer_name,
-	  p.name AS product_name,
-	  o.quantity,
-	  p.price,
-	  (o.quantity * p.price) AS total_price,
-	  o.delivery_address,
-	  o.delivery_location,								          o.status,
-	  o.delivery_date,
-	  o.created_at
+	   o.id AS order_id,
+	   o.user_id,
+	   o.total_price,
+	   o.delivery_address,
+	   o.status,
+	   o.delivery_date,
+	   o.created_at,
+	   JSON_ARRAYAGG(
+	     JSON_OBJECT(
+		'product_name', p.name,
+		'quantity', op.quantity,
+		'price', p.price
+	     )
+	   ) AS products
         FROM orders o
-	JOIN products p ON o.product_id = p.id
-	JOIN users u ON o.user_id = u.id
-	ORDER BY o.created_at DESC;
+	JOIN order_products op ON o.id = op.order_id
+	JOIN products p ON op.product_id = p.id
+	GROUP BY o.id;
        `);
-       console.log('Orders returned:', orders);
-       //console.log(orders);
-       res.render('admin-orders', { orders });
+
+       console.log('Raw Orders:', orders);
+       const parsedOrders = orders.map(order => {
+          console.log('Products Before Parsing:', order.products, typeof order.products);
+	  return {
+	     ...order,
+	     products: typeof order.products === 'string' ? JSON.parse(order.products) : order.products
+	  };
+       });
+       console.log('Parsed Orders:', parsedOrders);
+
+       res.render('admin-orders', { orders: parsedOrders, user: req.session.user });
   } catch (err) {
       console.error('Error fetching admin orders:', err.message);
       res.status(500).send('Error fetching orders.');
@@ -251,9 +236,6 @@ app.delete('/admin/orders/:id/delete', authenticateUser, authorizeRole('admin'),
 });
 
 app.post('/orders/delete/:id', async (req, res) => {
-  /**if (!req.session.userId) {
-      return res.redirect('/auth/login'); // Redirect to login if not authenticated
-  }**/
   const { id } = req.params;
   const userId = req.session.user.id;
 
@@ -267,23 +249,6 @@ app.post('/orders/delete/:id', async (req, res) => {
 	res.status(500).send('Failed to delete order');
     }
 });
-
-/**
-app.post('/admin/orders/:id/update', async (req, res) => {
-  const { id } = req.params;
-  const { status } = req.body;
-
-  await db.query('UPDATE orders SET status = ? WHERE id = ?', [status, id]);
-  res.json({ message: 'Order status updated successfully' });
-});
-**/
-/**
-app.delete('/admin/orders/:id/delete', async (req, res) => {
-  const { id } = req.params;
-
-  await db.query('DELETE FROM orders WHERE id = ?', [id]);
-  res.json({ message: 'Order deleted successfully' });
-});**/
 
 app.put('/admin/orders/:orderId/status', (req, res) => {
   const { orderId } = req.params;
@@ -332,17 +297,6 @@ app.get('/user/orders', async (req, res) => {
        res.status(500).send('Error fetching orders.');
   }
 });
-
-/**
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET, // Add SESSION_SECRET to .env
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: false, maxAge: 24 * 60 * 60 * 1000 }, // 1-day session
-  })
-);
-**/
 
 app.use('/admin', adminRoutes);
 app.use('/user', userRoutes);

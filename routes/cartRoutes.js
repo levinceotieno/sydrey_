@@ -42,15 +42,27 @@ router.get('/', async (req, res) => {
       }
 
       const cartItems = await cartModel.getCart(userId);
+      console.log('Cart Items:', cartItems); // Log the cart items
 
-      const updatedCart = cartItems.map(item => ({
-	 ...item,
-	 totalPrice: item.price * item.quantity // Add total price calculation
-      }));
+      const updatedCart = cartItems.map(item => {
+	 const price = parseFloat(item.price);
+	 const quantity = parseInt(item.quantity);
+	 return {
+	   ...item,
+	   price: price, // Ensure price is a number
+	   quantity: quantity, // Ensure quantity is a number
+	   total_price: price * quantity // Add total price calculation
+	 };
+      });
+
+      const grandTotal = updatedCart.reduce((total, item) => {
+	  return total + (parseFloat(item.price) * item.quantity);
+      }, 0);
 
       res.render('cart', { 
-	 cart: cartItems, 
-	 cartCount: cartItems.length, 
+	 cart: updatedCart,
+	 cartCount: updatedCart.length,
+	 grandTotal: grandTotal,
 	 userId, // Pass userId to the EJS template
 	 user: req.session.user
       });
@@ -80,33 +92,35 @@ router.post('/checkout', async (req, res) => {
       // Calculate delivery date based on location
       const deliveryDate = calculateDeliveryDate(deliveryLocation);
 
+      // Calculate total price for the entire order
+      const totalOrderPrice = cartItems.reduce((total, item) => {
+	// Make sure to parse values to numbers and multiply by quantity
+	const price = parseFloat(item.price);
+	const quantity = parseInt(item.quantity, 10);
+	return total + (price * quantity);
+      }, 0);
+
+      const [orderResult] = await db.query(
+	 'INSERT INTO orders (user_id, delivery_location, delivery_address, delivery_date, total_price, status) VALUES (?, ?, ?, ?, ?, ?)', 
+	 [userId, deliveryLocation, deliveryAddress, deliveryDate, totalOrderPrice, 'Pending']
+      );
+
+      const orderId = orderResult.insertId;
+
       // Insert each cart item into the orders table
       for (const item of cartItems) {
 	 console.log('Cart Items:', cartItems);
-	 if (!item.product_id) {
-	    console.error('Missing product ID for cart item:', item);
-	    continue; // Skip items with missing product
-	 }
 
-         // Calculate the total price for the item
-	 const totalPrice = item.price * item.quantity;
-
-	 // Insert order into the database
-         await db.query('INSERT INTO orders (user_id, product_id, quantity, delivery_location, delivery_address, delivery_date, total_price, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [
-	 userId,
-	 item.product_id,
-	 item.quantity,
-	 deliveryLocation,
-	 deliveryAddress,
-	 deliveryDate,
-	 totalPrice,
-	 'Pending'
-      ]);
+	 // Insert each cart item into order_products table
+         await db.query(
+	    'INSERT INTO order_products (order_id, product_id, quantity, price) VALUES (?, ?, ?, ?)', 
+	    [orderId, item.product_id, item.quantity, item.price]
+	 );
       }
 
       // Clear the cart after successful checkout
       await cartModel.clearCart(userId);
-      res.status(201).json({ message: 'Order placed successfully' });
+      res.status(201).json({ message: 'Order placed successfully', orderId });
    } catch (error) {
       console.error('Error placing order:', error);
       res.status(500).json({ message: 'Failed to place order' });

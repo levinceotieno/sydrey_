@@ -18,14 +18,19 @@ exports.getCart = async (userId) => {
       c.product_id, 
       p.name, 
       c.quantity, 
-      p.price, 
-      (c.quantity * p.price) AS total_price
+      CAST(p.price AS DECIMAL(10, 2)) AS price,
+      (c.quantity * CAST(p.price AS DECIMAL(10, 2))) AS total_price
     FROM cart c
     JOIN products p ON c.product_id = p.id
     WHERE c.user_id = ?
   `;
   const [rows] = await db.query(query, [userId]);
-  return rows;
+  return rows.map(row => ({
+     ...row,
+     quantity: parseInt(row.quantity, 10),
+     price: parseFloat(row.price),
+     total_price: parseFloat(row.total_price)
+  }));
 };
 
 exports.clearCart = async (userId) => {
@@ -39,6 +44,7 @@ async function updateCartItem(userId, productId, quantity) {
     SET quantity = ?
     WHERE user_id = ? AND product_id = ?;
   `;
+  console.log('Executing query:', query, [quantity, userId, productId]);
   await db.query(query, [quantity, userId, productId]);
 }
 

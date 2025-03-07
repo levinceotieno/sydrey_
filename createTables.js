@@ -58,26 +58,31 @@ const createTables = async () => {
     // Create order_products table
     await db.execute(`
       CREATE TABLE IF NOT EXISTS order_products (
-        id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-        order_id BIGINT UNSIGNED NOT NULL,
-        product_id BIGINT UNSIGNED NOT NULL,
-        quantity INT NOT NULL
+	 id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+	 order_id BIGINT UNSIGNED NOT NULL,
+	 product_id BIGINT UNSIGNED NOT NULL,
+	 quantity INT NOT NULL,
+	 price DECIMAL(10, 2) NOT NULL,
+	 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	 FOREIGN KEY (order_id) REFERENCES orders(id),
+	 FOREIGN KEY (product_id) REFERENCES products(id)
       )
     `);
 
     // Create orders table
     await db.execute(`
       CREATE TABLE IF NOT EXISTS orders (
-        id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-        user_id BIGINT UNSIGNED NOT NULL,
-        product_id BIGINT UNSIGNED NOT NULL,
-        delivery_address VARCHAR(255) NOT NULL,
-        delivery_location ENUM('withinKenya', 'outsideKenya') NOT NULL,
-        quantity INT NOT NULL,
-        status ENUM('pending', 'processing', 'shipped', 'delivered') DEFAULT 'pending',
-        total_price DECIMAL(10, 2) NOT NULL,
-        delivery_date DATE NOT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+	 id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+	 user_id BIGINT UNSIGNED NOT NULL,
+	 delivery_location ENUM('withinKenya', 'outsideKenya') NOT NULL,
+	 delivery_address VARCHAR(255) NOT NULL,
+	 delivery_date DATE NOT NULL,
+	 total_price DECIMAL(10, 2) NOT NULL,
+	 status ENUM('pending', 'processing', 'shipped', 'delivered') DEFAULT 'pending',
+	 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	 FOREIGN KEY (user_id) REFERENCES users(id)
       )
     `);
 

@@ -25,22 +25,7 @@
   </div>
 
   <!-- Dropdown Menu -->
-  <nav class="new-menu" id="new-menu">
-    <ul>
-      <% if (user) { %>
-        <li><a href="/">Home</a></li>
-        <li><a href="/products">Products</a></li>
-        <li><a href="/admin/orders">Orders</a></li>
-        <li><a href="/bookings/admin">Bookings</a></li>
-        <li><a href="/blogs/new">Create Blog</a></li>
-        <li>
-          <form method="POST" action="/auth/admin/logout" class="logout-form">
-            <button type="submit" class="logout-btn">Logout</button>
-          </form>
-        </li>
-      <% } %>
-    </ul>
-  </nav>
+  <%- include('_menu') %>
 
   <!-- Main Admin Dashboard -->
   <div class="admin-dashboard">

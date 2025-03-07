@@ -1,0 +1,126 @@
+:root {
+  --primary-color: #004d40;
+  --secondary-color: #ff9800;
+  --text-color: #333;
+  --background-color: #f0f4f2;
+}
+
+.cart-content {
+  margin: 100px auto 20px;
+  padding: 20px;
+  max-width: 90%;
+}
+
+.cart-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  width: 240px;
+}
+
+.cart-item-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.quantity-input {
+  width: 60px;
+  text-align: center;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  margin: 10px 0;
+}
+
+.cart-summary {
+  text-align: center;
+  margin-top: 20px;
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.cart-summary h3 {
+  color: var(--primary-color);
+  margin-bottom: 20px;
+}
+
+.empty-cart-message {
+  text-align: center;
+  color: var(--text-color);
+  margin-top: 50px;
+}
+
+.empty-cart-message a {
+  display: inline-block;
+  margin-top: 20px;
+}
+
+/* Modal Styles */
+.modal {
+  display: flex;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal.hidden {
+  display: none;
+  visibility: hidden;
+  opacity: 0;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 30px;
+  border-radius: 10px;
+  text-align: center;
+  width: 60%;
+  max-width: 500px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 20px;
+  color: var(--primary-color);
+  cursor: pointer;
+}
+
+.modal-content form label {
+  display: block;
+  margin-bottom: 15px;
+  color: var(--text-color);
+}
+
+.modal-content form input[type="text"],
+.modal-content form input[type="radio"] {
+  margin-bottom: 20px;
+}
+
+@media (max-width: 600px) {
+  .cart-content {
+    padding: 10px;
+  }
+
+  .products-container {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .cart-item {
+    width: 90%;
+    max-width: 300px;
+    margin: 0 auto;
+  }
+}

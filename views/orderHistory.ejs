@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -9,89 +9,128 @@
   <link rel="stylesheet" href="/styles/orders.css">
 </head>
 <body>
-
   <div class="menu-backdrop" id="menu-backdrop"></div>
 
   <!-- Navbar Section -->
   <div class="navbar-container">
     <div class="navbar">
-
-      <!-- ☰ Menu Icon -->
       <div class="menu-toggle" id="new-menu-toggle">☰</div>
-
-      <!-- Brand Name -->
       <div class="logo">Sydrey Enterprise</div>
-
-      <!-- Cart and Profile -->
       <div class="cart-profile">
-	<!-- Cart Icon -->
-	<a href="/cart">
-	  <img src="/images/cart-icon.svg" alt="Shopping Cart" width="19" height="19" style="vertical-align: middle">
-	  <%= cartCount %>
-	</a>
-
-	<!-- Profile Icon -->
-	<% if (user) { %>
-	  <a href="/user/profile">
-	    <% if (user.profile_photo) { %>
-	      <img src="<%= user.profile_photo %>?v=<%= Date.now() %>" alt="Profile Photo" class="profile-image">
-	    <% } else { %>
-	      <img src="/images/default.png" alt="Profile Photo" class="profile-image">
-	    <% } %>
-	  </a>
-	<% } %>
+        <a href="/cart">
+          <img src="/images/cart-icon.svg" alt="Shopping Cart" width="19" height="19" style="vertical-align: middle">
+          <%= cartCount %>
+        </a>
+        <% if (user) { %>
+          <a href="/user/profile">
+            <% if (user.profile_photo) { %>
+              <img src="<%= user.profile_photo %>?v=<%= Date.now() %>" alt="Profile Photo" class="profile-image">
+            <% } else { %>
+              <img src="/images/default.png" alt="Profile Photo" class="profile-image">
+            <% } %>
+          </a>
+        <% } %>
       </div>
     </div>
   </div>
 
   <!-- Dropdown Menu -->
-  <nav class="new-menu" id="new-menu">
-    <ul>
-	<li><a href="/">Home</a></li>
-	</li><a href="/products" class="nav-link">Products</a></li>
-	<li><a href="/bookings/services">Consultation</a></li>
-	<li><a href="/orders/history">My Orders</a></li>
-	<li><a href="/blogs">Blog</a></li>
-	<li><a href="/user/profile">Profile</a></li>
-	<% if (user && user.isAdmin) { %>
-	  <li><a href="/bookings/admin" class="nav-link">Manage Bookings</a></li>
-	  <li><a href="/admin" class="nav-link">Admin Dashboard</a></li>
-	  <li><a href="/blogs/new" class="nav-link">Create Post</a></li>
-	<% } %>
-    </ul>
-  </nav>
+  <%- include('_menu') %>
 
   <main class="main-container">
     <h1 class="page-title">My Orders</h1>
+    
     <% if (orders.length > 0) { %>
       <div class="shop-now">
-        <a href="/products" class="shop-now-button">Shop Now</a>
+        <a href="/products" class="shop-now-button">Continue Shopping</a>
       </div>
+      
+      <div class="order-status-filter">
+        <button class="status-filter-btn active" data-status="all">All Orders</button>
+        <button class="status-filter-btn" data-status="pending">Pending</button>
+        <button class="status-filter-btn" data-status="processing">Processing</button>
+        <button class="status-filter-btn" data-status="shipped">Shipped</button>
+        <button class="status-filter-btn" data-status="delivered">Delivered</button>
+      </div>
+      
       <div class="orders-container">
         <% orders.forEach(order => { %>
-	  <div class="order-card">
-	    <div><strong>Order ID:</strong> <%= order.id %></div>
-	    <div><strong>Product Name:</strong> <%= order.product_name %></div>
-	    <div><strong>Quantity:</strong> <%= order.quantity %></div>
-	    <div><strong>Total Price:</strong> Ksh. <%= parseFloat(order.total_price).toFixed(2) %></div>
-	    <div><strong>Delivery Address:</strong> <%= order.delivery_address %></div>
-	    <div><strong>Status:</strong> <%= order.status %></div>
-	    <div><strong>Delivery Date:</strong> <%= order.delivery_date %></div>
-	    <div><strong>Created At:</strong> <%= new Date(order.created_at).toLocaleString() %></div>
-	    <form action="/orders/delete/<%= order.id %>" method="POST" class="delete-order-form">
-	       <button type="submit" class="delete-button">Delete Order</button>
-	    </form>
-	  </div>
+          <div class="order-card" data-status="<%= order.status %>">
+            <div class="order-header">
+              <div class="order-id"><strong>Order #<%= order.id %></strong></div>
+              <div class="order-status status-<%= order.status %>"><%= order.status %></div>
+            </div>
+            
+            <div class="order-details">
+              <div class="order-info">
+                <div><strong>Created:</strong> <%= new Date(order.created_at).toLocaleString() %></div>
+                <div><strong>Total:</strong> Ksh. <%= parseFloat(order.total_price).toFixed(2) %></div>
+                <div><strong>Delivery:</strong> <%= order.delivery_date %></div>
+                <div><strong>Address:</strong> <%= order.delivery_address %></div>
+              </div>
+              
+              <div class="order-products-section">
+                <h3>Products</h3>
+                <div class="order-products">
+                  <% order.products.forEach(product => { %>
+                    <div class="order-product">
+                      <span class="product-name"><%= product.product_name %></span>
+                      <div class="product-details">
+                        <span class="product-quantity">Qty: <%= product.quantity %></span>
+                        <span class="product-price">Ksh. <%= parseFloat(product.price).toFixed(2) %></span>
+                      </div>
+                    </div>
+                  <% }); %>
+                </div>
+              </div>
+            </div>
+            
+            <div class="order-actions">
+              <form action="/orders/delete/<%= order.id %>" method="POST" class="delete-order-form">
+                <button type="submit" class="delete-button">Cancel Order</button>
+              </form>
+            </div>
+          </div>
         <% }); %>
       </div>
     <% } else { %>
-      <p class="no-orders-message">No orders found. <a href="/products" class="shop-link">Start shopping now</a> to place your first order!</p>
+      <div class="no-orders-container">
+        <p class="no-orders-message">You haven't placed any orders yet.</p>
+        <a href="/products" class="shop-now-button">Start Shopping Now</a>
+      </div>
     <% } %>
   </main>
-   <script src="/js/menu.js" defer></script>
+  
+  <script src="/js/menu.js" defer></script>
   <script>
-    document.querySelector('.menu-toggle').addEventListener('click', () => {
-      document.querySelector('.links').classList.toggle('visible');
+    // Order status filtering
+    document.querySelectorAll('.status-filter-btn').forEach(button => {
+      button.addEventListener('click', () => {
+        // Update active button
+        document.querySelectorAll('.status-filter-btn').forEach(btn => {
+          btn.classList.remove('active');
+        });
+        button.classList.add('active');
+        
+        // Filter orders
+        const status = button.dataset.status;
+        document.querySelectorAll('.order-card').forEach(card => {
+          if (status === 'all' || card.dataset.status === status) {
+            card.style.display = 'block';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    });
+    
+    // Confirm order deletion
+    document.querySelectorAll('.delete-order-form').forEach(form => {
+      form.addEventListener('submit', function(e) {
+        if (!confirm('Are you sure you want to cancel this order?')) {
+          e.preventDefault();
+        }
+      });
     });
   </script>
 </body>

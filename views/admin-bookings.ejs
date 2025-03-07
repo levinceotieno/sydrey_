@@ -183,19 +183,7 @@
   </div>
 
   <!-- Dropdown Menu -->
-  <nav class="new-menu" id="new-menu">
-    <ul>
-      <li><a href="/">Home</a></li>
-      <li><a href="/products">Products</a></li>
-      <li><a href="/bookings/history">Bookings History</a></li>
-      <li><a href="/blogs">Blog</a></li>
-      <li><a href="/user/profile">Profile</a></li>
-      <% if (user && user.isAdmin) { %>
-        <li><a href="/bookings/admin" class="nav-link">Manage Bookings</a></li>
-        <li><a href="/admin" class="nav-link">Admin Dashboard</a></li>
-      <% } %>
-    </ul>
-  </nav>
+  <%- include('_menu') %>
 
   <div class="bookings-container">
     <h1 class="page-title">Admin Bookings</h1>
