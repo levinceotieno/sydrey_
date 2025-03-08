@@ -233,19 +233,6 @@ body {
   opacity: 0.9;
 }
 
-/* Footer */
-.main-footer {
-  text-align: center;
-  padding: 15px;
-  background-color: #004d40;
-  color: white;
-  margin-top: 20px;
-}
-
-.main-footer p {
-  font-size: 0.9rem;
-}
-
 /* Media Queries */
 @media (max-width: 768px) {
   .main-header h1 {

@@ -25,7 +25,14 @@ router.use(authenticateUser, authorizeRole('admin'));
 router.get('/', authenticateUser, authorizeRole('admin'), async (req, res) => {
   try {
     const [products] = await db.query('SELECT * FROM products');
-    res.render('admin', { user: req.user, products });
+
+    const [cartResults] = await db.query(
+      'SELECT COUNT(*) as count FROM cart WHERE user_id = ?',
+      [req.user.id]
+    );
+    const cartCount = cartResults[0].count;
+
+    res.render('admin', { user: req.user, products, cartCount });
   } catch (error) {
     console.error('Error fetching products:', error);
     res.status(500).send('Internal Server Error');

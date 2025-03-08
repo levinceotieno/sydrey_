@@ -1,41 +1,17 @@
-<DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Orders - Sydreys Enterprise</title>
-  <link rel="stylesheet" href="/styles/products.css">
-  <link rel="stylesheet" href="/styles/new-menu.css">
-  <link rel="stylesheet" href="/styles/orders.css">
-</head>
-<body>
-  <div class="menu-backdrop" id="menu-backdrop"></div>
+  <%
+    // Define page-specific variables
+    const title = "Products";
+    const additionalCSS = [
+      "/styles/products.css",
+      "/styles/orders.css"
+    ];
+    const additionalScripts = [
+      
+    ];
+  %>
 
-  <!-- Navbar Section -->
-  <div class="navbar-container">
-    <div class="navbar">
-      <div class="menu-toggle" id="new-menu-toggle">☰</div>
-      <div class="logo">Sydrey Enterprise</div>
-      <div class="cart-profile">
-        <a href="/cart">
-          <img src="/images/cart-icon.svg" alt="Shopping Cart" width="19" height="19" style="vertical-align: middle">
-          <%= cartCount %>
-        </a>
-        <% if (user) { %>
-          <a href="/user/profile">
-            <% if (user.profile_photo) { %>
-              <img src="<%= user.profile_photo %>?v=<%= Date.now() %>" alt="Profile Photo" class="profile-image">
-            <% } else { %>
-              <img src="/images/default.png" alt="Profile Photo" class="profile-image">
-            <% } %>
-          </a>
-        <% } %>
-      </div>
-    </div>
-  </div>
+  <%- include('_header', { title, additionalCSS }) %>
 
-  <!-- Dropdown Menu -->
-  <%- include('_menu') %>
 
   <main class="main-container">
     <h1 class="page-title">My Orders</h1>
@@ -100,8 +76,7 @@
       </div>
     <% } %>
   </main>
-  
-  <script src="/js/menu.js" defer></script>
+
   <script>
     // Order status filtering
     document.querySelectorAll('.status-filter-btn').forEach(button => {
@@ -133,5 +108,5 @@
       });
     });
   </script>
-</body>
-</html>
+  
+<%- include('_footer', { additionalScripts }) %>

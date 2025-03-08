@@ -1,35 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Profile - Sydrey Enterprise</title>
-  <link rel="stylesheet" href="/styles/products.css">
-  <link rel="stylesheet" href="/styles/new-menu.css">
-  <link rel="stylesheet" href="/styles/profile.css">
-</head>
-<body>
+  <%
+    // Define page-specific variables
+    const title = "Products";
+    const additionalCSS = [
+      "/styles/products.css",
+      "/styles/profile.css"
+    ];
+    const additionalScripts = [
+      
+    ];
+    const hideProfileIcon = true;
+  %>
 
-  <div class="menu-backdrop" id="menu-backdrop"></div>
-
-  <!-- Navbar Section -->
-  <div class="navbar-container">
-    <div class="navbar">
-
-      <!-- ☰ Menu Icon -->
-      <div class="menu-toggle" id="new-menu-toggle">☰</div>
-
-      <!-- Brand Name -->
-      <div class="logo">Sydrey Enterprise</div>
-
-      <!-- Cart -->
-      <div class="cart-profile">
-      </div>
-    </div>
-  </div>
-
-  <!-- Dropdown Menu -->
-  <%- include('_menu') %>
+  <%- include('_header', { title, additionalCSS, hideProfileIcon }) %>
 
   <main class="profile-container">
     <h1>Welcome, <%= user.name %></h1>
@@ -62,7 +44,6 @@
     </div>
   </main>
 
-  <script src="/js/menu.js" defer></script>
   <script>
     const form = document.querySelector('form[action="/user/profile/photo"]');
     form.addEventListener('submit', () => {
@@ -70,13 +51,6 @@
       spinner.className = 'loading-spinner';
       document.body.appendChild(spinner);
     });
-
-    //const menuToggle = document.querySelector('.menu-toggle');
-    //const navLinks = document.querySelector('.nav-links');
-
-    //menuToggle.addEventListener('click', () => {
-       //navLinks.classList.toggle('open');
-    //});
   </script>
-</body>
-</html>
+  
+  <%- include('_footer', { additionalScripts }) %>

@@ -1,0 +1,50 @@
+.icon, .phone-icon {
+  width: 24px;
+  height: 24px;
+  min-width: 24px; /* Prevents icon from shrinking */
+  stroke: #4CAF50; /*#4a7c59;*/ /* Green color to match your agricultural theme */
+  stroke-width: 2;
+  margin-right: 10px;
+}
+
+/* Improved selling points section */
+.selling-points {
+  background-color: #e6f3f0;
+  padding: 20px;
+  margin: 15px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.selling-point {
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Left-align content for better readability */
+  gap: 10px;
+}
+
+/* Contact section styling */
+.contact-info {
+  padding: 15px;
+  margin-bottom: 20px;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  border-radius: 8px;
+  /*box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);*/
+}
+
+.contact-text {
+  font-size: 0.75rem;
+}
+
+/* Fix specific SVG with text inside (Quality Guaranteed icon) */
+.selling-point svg text {
+  stroke: #4CAF50; /*none;*/
+  fill: currentColor;
+}

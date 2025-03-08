@@ -94,6 +94,24 @@ app.use((req, res, next) => {
 
 app.use('/bookings', bookingRoutes);
 
+app.use(async (req, res, next) => {
+  if (!req.session.user) {
+     return next();
+  }
+
+  try {
+    const [cartResults] = await db.query(
+	'SELECT COUNT(*) as count FROM cart WHERE user_id = ?',
+	[req.session.user.id]
+    );
+    res.locals.cartCount = cartResults[0]?.count || 0;
+  } catch (error) {
+    console.error('Error fetching cart count:', error);
+    res.locals.cartCount = 0;
+  }
+  next();
+});
+
 // Routes
 app.get('/', async (req, res) => {
   try {
@@ -162,11 +180,23 @@ app.get('/admin/orders', async (req, res) => {
        });
        console.log('Parsed Orders:', parsedOrders);
 
-       res.render('admin-orders', { orders: parsedOrders, user: req.session.user });
+       const [cartResults] = await db.query(
+	  'SELECT COUNT(*) as count FROM cart WHERE user_id = ?',
+	  [req.session.user.id]
+       );
+       const cartCount = cartResults[0]?.count || 0; // Default to 0 if cartResults is empty
+
+       res.render('admin-orders', { orders: parsedOrders, user: req.session.user, cartCount });
   } catch (err) {
       console.error('Error fetching admin orders:', err.message);
       res.status(500).send('Error fetching orders.');
   }
+});
+
+app.get('/terms', (req, res) => {
+  res.render('terms', {
+    title: 'Terms and Conditions - Sydrey Enterprise'
+  });
 });
 
 app.post('/admin/orders/update-status/:id', async (req, res) => {

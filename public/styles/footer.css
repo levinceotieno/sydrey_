@@ -1,0 +1,130 @@
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Viewport height */
+}
+
+main {
+  flex: 1 0 auto; /* This will push the footer down */
+  padding-bottom: 20px; /* Reduced space between content and footer */
+}
+
+/* Footer Styles - Compact Version */
+.main-footer {
+  flex-shrink: 0; /* Prevent footer from shrinking */
+  text-align: center;
+  padding: 10px 0; /* Reduced padding */
+  background-color: var(--primary-color);
+  color: white;
+  margin-top: auto; /* Push to bottom if content doesn't fill page */
+  font-size: 1rem; /* Smaller font size */
+  width: 100%;
+}
+
+.main-footer p {
+  margin: 3px 0; /* Reduced margin */
+}
+
+.contact-details {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 25px; /* Reduced gap */
+  margin-top: 5px; /* Reduced margin */
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* Reduced gap */
+  padding: 5px 10px;
+}
+
+.contact-icon {
+  width: 18px; /* Smaller icons */
+  height: 14px;
+  stroke: white;
+}
+
+.contact-text {
+  font-size: 0.3rem; /* Smaller text */
+}
+
+/* Social Media Icons - if added */
+.social-icons {
+  display: flex;
+  justify-content: center;
+  gap: 25px; /* Reduced gap */
+  margin-top: 5px; /* Reduced margin */
+}
+
+.social-icon {
+  width: 16px; /* Smaller icons */
+  height: 16px;
+  stroke: white;
+  transition: transform 0.3s ease;
+}
+
+.social-icon:hover {
+  transform: scale(1.2);
+}
+
+/* Responsive design */
+@media (max-width: 600px) {
+  .main-footer {
+    padding: 8px 0; /* Even more compact on mobile */
+  }
+  
+  .contact-details {
+    gap: 8px;
+  }
+  
+  /* Optional: Put everything on one line on mobile */
+  .contact-details {
+    flex-direction: row;
+    font-size: 0.7rem;
+  }
+  
+  .contact-item {
+    font-size: 0.7rem;
+  }
+}
+
+/* Optional - for extremely compact footer */
+@media (max-width: 480px) {
+  .main-footer {
+    font-size: 0.7rem;
+  }
+  
+  .contact-icon {
+    width: 12px;
+    height: 12px;
+  }
+  
+  .contact-text {
+    font-size: 0.7rem;
+  }
+}
+
+.footer-links {
+  margin: 5px 0;
+  padding-top: 6px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2); /* Optional subtle divider */
+}
+
+.footer-links a {
+  color: white;
+  text-decoration: none;
+  font-size: 0.8rem;
+  transition: opacity 0.3s;
+}
+
+.footer-links a:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}

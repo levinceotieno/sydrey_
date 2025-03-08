@@ -1,11 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="/styles/products.css">
-  <link rel="stylesheet" href="/styles/new-menu.css">
-  <link rel="stylesheet" href="/styles/blogForm.css">
+  <%
+    // Define page-specific variables
+    const title = "Products";
+    const additionalCSS = [
+      "/styles/products.css",
+      "/styles/blogForm.css"
+    ];
+    const additionalScripts = [
+      
+    ];
+  %>
+
+  <%- include('_header', { title, additionalCSS }) %>
+
   <!-- Add TinyMCE for rich text editing -->
   <script src="/tinymce/js/tinymce/tinymce.min.js"></script>
   <!-- <script src="https://cdn.tiny.cloud/1/77r8ge3rw81pd7xb1fq2u3zm5ccrlj1cipma4mqkz7xra291/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script> -->
@@ -46,40 +52,6 @@
       }
     });
   </script>
-  <title>Edit Blog</title>
-</head>
-<body>
-
-  <div class="menu-backdrop" id="menu-backdrop"></div>
-
-  <!-- Navbar Section -->
-  <div class="navbar-container">
-    <div class="navbar">
-
-      <!-- ☰ Menu Icon -->
-      <div class="menu-toggle" id="new-menu-toggle">☰</div>
-
-      <!-- Brand Name -->
-      <div class="logo">Sydrey Enterprise</div>
-
-      <!-- Cart and Profile -->
-      <div class="cart-profile">
-        <!-- Profile Icon -->
-        <% if (user) { %>
-          <a href="/user/profile">
-            <% if (user.profile_photo) { %>
-              <img src="<%= user.profile_photo %>?v=<%= Date.now() %>" alt="Profile Photo" class="profile-image">
-            <% } else { %>
-              <img src="/images/default.png" alt="Profile Photo" class="profile-image">
-            <% } %>
-          </a>
-        <% } %>
-      </div>
-    </div>
-  </div>
-
-  <!-- Dropdown Menu -->
-  <%- include('_menu') %>
 
   <main>
     <h1>Edit Blog Post</h1>
@@ -104,11 +76,10 @@
     </form>
   </main>
 
-  <script src="/js/menu.js" defer></script>
   <script>
     document.getElementById('menuToggle')?.addEventListener('click', () => {
       document.querySelector('.nav-links')?.classList.toggle('visible');
     });
   </script>
-</body>
-</html>
+  
+  <%- include('_footer', { additionalScripts }) %>

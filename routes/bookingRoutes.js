@@ -4,23 +4,54 @@ const bookingModel = require('../models/bookingModel');
 const { authenticateUser, authorizeRole } = require('../middleware/auth');
 
 // Get bookings page (for users to make bookings)
-router.get('/services', authenticateUser, (req, res) => {
-  res.render('booking-services', { 
-    user: req.session.user 
-  });
+router.get('/services', authenticateUser, async (req, res) => {
+  try {
+    const [cartResults] = await req.db.query(
+       'SELECT COUNT(*) as count FROM cart WHERE user_id = ?',
+       [req.session.user.id]
+    );
+    const cartCount = cartResults[0]?.count || 0;
+	      
+    res.render('booking-services', { 
+      user: req.session.user, 
+      cartCount
+    });
+  } catch (error) {
+    console.error('Error fetching cart count:', error);
+    res.render('booking-services', {
+       user: req.session.user,
+       cartCount: 0
+    });
+  }
 });
 
 // Form to create a new booking
-router.get('/new', authenticateUser, (req, res) => {
+router.get('/new', authenticateUser, async (req, res) => {
   const { service } = req.query;
   if (!service || !['education', 'agronomist'].includes(service)) {
     return res.redirect('/bookings/services');
   }
   
-  res.render('booking-form', {
-    user: req.session.user,
-    service: service
-  });
+  try {
+     const [cartResults] = await req.db.query(
+	'SELECT COUNT(*) as count FROM cart WHERE user_id = ?',
+	[req.session.user.id]
+     );
+     const cartCount = cartResults[0]?.count || 0;
+
+     res.render('booking-form', {
+       user: req.session.user,
+       service: service,
+       cartCount
+     });
+  } catch (error) {
+    console.error('Error fetching cart count:', error);
+    res.render('booking-form', {
+	user: req.session.user,
+	service: service,
+	cartCount: 0
+    });
+  }
 });
 
 // User's booking history
@@ -29,9 +60,16 @@ router.get('/history', authenticateUser, async (req, res) => {
     const userId = req.session.user.id;
     const bookings = await bookingModel.getUserBookings(userId);
     
+    const [cartResults] = await req.db.query(
+	'SELECT COUNT(*) as count FROM cart WHERE user_id = ?',
+	[userId]
+    );
+    const cartCount = cartResults[0]?.count || 0;
+
     res.render('booking-history', {
       user: req.session.user,
-      bookings: bookings
+      bookings: bookings,
+      cartCount
     });
   } catch (error) {
     console.error('Error fetching booking history:', error);
@@ -117,10 +155,18 @@ router.post('/delete/:id', authenticateUser, async (req, res) => {
 router.get('/admin', authenticateUser, authorizeRole('admin'), async (req, res) => {
   try {
     const bookings = await bookingModel.getAllBookings();
+
+    const [cartResults] = await req.db.query(
+	'SELECT COUNT(*) as count FROM cart WHERE user_id = ?',
+	[req.session.user.id]
+    );
+    const cartCount = cartResults[0]?.count || 0;
+
     res.render('admin-bookings', { 
       user: req.session.user, 
       bookings: bookings,
       messages: req.flash(),
+      cartCount
     });
   } catch (error) {
     console.error('Error fetching admin bookings:', error);

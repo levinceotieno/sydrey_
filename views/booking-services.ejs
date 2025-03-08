@@ -1,11 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Book a Service - Sydrey Enterprise</title>
-  <link rel="stylesheet" href="/styles/new-menu.css">
-  <link rel="stylesheet" href="/styles/products.css">
+  <%
+    // Define page-specific variables
+    const title = "Products";
+    const additionalCSS = [
+      "/styles/products.css"
+    ];
+    const additionalScripts = [
+      
+    ];
+  %>
+
+  <%- include('_header', { title, additionalCSS }) %>
+
   <style>
     .services-container {
       max-width: 1200px;
@@ -77,36 +82,6 @@
       padding: 20px;
     }
   </style>
-</head>
-<body>
-  <div class="menu-backdrop" id="menu-backdrop"></div>
-
-  <!-- Navbar Section -->
-  <div class="navbar-container">
-    <div class="navbar">
-      <!-- ☰ Menu Icon -->
-      <div class="menu-toggle" id="new-menu-toggle">☰</div>
-
-      <!-- Brand Name -->
-      <div class="logo">Sydrey Enterprise</div>
-
-      <!-- Cart and Profile -->
-      <div class="cart-profile">
-        <% if (user) { %>
-          <a href="/user/profile">
-             <% if (user.profile_photo) { %>
-                <img src="<%= user.profile_photo %>?v=<%= Date.now() %>" alt="Profile Photo" class="profile-image">
-             <% } else { %>
-                <img src="/images/default.png" alt="Profile Photo" class="profile-image">
-             <% } %>
-          </a>
-        <% } %>
-      </div>
-    </div>
-  </div>
-
-  <!-- Dropdown Menu -->
-  <%- include('_menu') %>
 
   <h1 class="page-title">Our Services</h1>
   
@@ -130,6 +105,5 @@
     </div>
   </div>
 
-  <script src="/js/menu.js" defer></script>
-</body>
-</html>
+  
+  <%- include('_footer', { additionalScripts }) %>

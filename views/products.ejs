@@ -1,51 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Products</title>
-  <link rel="stylesheet" href="/styles/products.css">
-  <link rel="stylesheet" href="/styles/new-menu.css">
-  <link rel="stylesheet" href="/styles/search.css">
-</head>
-<body>
+  <%
+      // Define page-specific variables
+      const title = "Products";
+      const additionalCSS = [
+        "/styles/products.css",
+        "/styles/search.css"
+      ];
+      const additionalScripts = [
+        
+      ];
+  %>
 
-  <div class="menu-backdrop" id="menu-backdrop"></div>
-
-  <!-- Navbar Section -->
-  <div class="navbar-container">
-    <div class="navbar">
-
-      <!-- ☰ Menu Icon -->
-      <div class="menu-toggle" id="new-menu-toggle">☰</div>
-
-      <!-- Brand Name -->
-      <div class="logo">Sydrey Enterprise</div>
-
-      <!-- Cart and Profile -->
-      <div class="cart-profile">
-        <!-- Cart Icon -->
-        <a href="/cart">
-	  <img src="/images/cart-icon.svg" alt="Shopping Cart" width="19" height="19" style="vertical-align: middle">
-	  <!-- <%= cartCount %> -->
-        </a>
-
-        <!-- Profile Icon -->
-	<% if (user) { %>
-	  <a href="/user/profile">
-	     <% if (user.profile_photo) { %>
-		<img src="<%= user.profile_photo %>?v=<%= Date.now() %>" alt="Profile Photo" class="profile-image">
-	     <% } else { %>
-		<img src="/images/default.png" alt="Profile Photo" class="profile-image">
-	     <% } %>
-	  </a>
-	<% } %>
-      </div>
-    </div>
-  </div>
-
-  <!-- Dropdown Menu -->
-  <%- include('_menu') %>
+  <%- include('_header', { title, additionalCSS }) %>
 
   <div class="search-container">
     <form action="/products/search" method="GET" class="search-form">
@@ -71,27 +36,6 @@
       <p><%= products.length %> product(s) found</p>
     </div>
   <% } %>
-
-  <!-- Slideshow Section -->
-  <!-- <div class="slideshow-container">
-    <h4>Featured Products</h4>
-    <% featuredProducts.forEach((product, index) => { %>
-      <div class="slide <%= index === 0 ? 'active' : '' %>">
-        <img src="<%= product.image_url %>" alt="<%= product.name %>" class="slide-image">
-        <div class="slide-info">
-          <h3><%= product.name %></h3>
-	  <p><%= product.description %></p>
-	  <div class="product-category <%= product.category === 'wholesale' ? 'wholesale' : 'retail' %>">
-	      <%= product.category === 'wholesale' ? 'Wholesale' : 'Retail' %>
-	  </div>
-	  <p>Available: <%= product.quantity %></p>
-          <p>Ksh. <%= product.price %></p>
-        </div>
-      </div>
-    <% }) %>
-    <button class="prev">&lt;</button>
-    <button class="next">&gt;</button>
-  </div> -->
 
   <h3>Ginger, Tumeric, Garlic, And Seeds</h3>
   <div class="filter-buttons">
@@ -124,7 +68,6 @@
     <% }) %>
   </div>
 
-  <script src="/js/menu.js" defer></script>
   <script>
 
     // Filtering logic
@@ -200,5 +143,5 @@
       });
     });
   </script>
-</body>
-</html>
+
+  <%- include('_footer', { additionalScripts }) %>

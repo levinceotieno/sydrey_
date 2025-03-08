@@ -1,0 +1,31 @@
+<!-- Navbar Section -->
+<div class="navbar-container">
+    <div class="navbar">
+
+      <!-- ☰ Menu Icon -->
+      <div class="menu-toggle" id="new-menu-toggle">☰</div>
+
+      <!-- Brand Name -->
+      <div class="logo">Sydrey Enterprise</div>
+
+      <!-- Cart and Profile -->
+      <div class="cart-profile">
+        <!-- Cart Icon -->
+        <a href="/cart">
+          <img src="/images/cart-icon.svg" alt="Shopping Cart" width="19" height="19" style="vertical-align: middle">
+          <%= cartCount %>
+        </a>
+
+        <!-- Profile Icon -->
+        <% if (user && !hideProfileIcon) { %>
+          <a href="/user/profile">
+             <% if (user.profile_photo) { %>
+                <img src="<%= user.profile_photo %>?v=<%= Date.now() %>" alt="Profile Photo" class="profile-image">
+             <% } else { %>
+                <img src="/images/default.png" alt="Profile Photo" class="profile-image">
+             <% } %>
+          </a>
+        <% } %>
+      </div>
+    </div>
+</div>

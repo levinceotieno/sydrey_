@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <!-- Core CSS files that should be included on every page -->
+  <link rel="stylesheet" href="/styles/navbar.css">
+  <link rel="stylesheet" href="/styles/footer.css">
+
+  <!-- Additional CSS files can be included in the specific templates -->
+  <% if (locals.additionalCSS) { %>
+    <% additionalCSS.forEach(function(cssFile) { %>
+      <link rel="stylesheet" href="<%= cssFile %>">
+    <% }) %>
+  <% } %>
+</head>
+<body>
+  <!-- Menu backdrop -->
+  <div class="menu-backdrop" id="menu-backdrop"></div>
+  
+  <!-- Navbar Section -->
+  <%- include('_nav', { hideProfileIcon: locals.hideProfileIcon }) %>
+  
+  <!-- Dropdown Menu -->
+  <%- include('_menu') %>
+  
+  <!-- Main content starts here -->
+  <main>

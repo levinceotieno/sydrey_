@@ -1,12 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Bookings - Sydrey Enterprise</title>
-  <link rel="stylesheet" href="/styles/products.css">
-  <link rel="stylesheet" href="/styles/new-menu.css">
-  <link rel="stylesheet" href="/styles/flash.css">
+  <%
+    // Define page-specific variables
+    const title = "Products";
+    const additionalCSS = [
+      "/styles/products.css",
+      "/styles/flash.css"
+    ];
+    const additionalScripts = [
+     
+    ];
+  %>
+
+  <%- include('_header', { title, additionalCSS }) %>
+
   <style>
     /* General Styles */
     body {
@@ -159,31 +164,6 @@
       }
     }
   </style>
-</head>
-<body>
-  <div class="menu-backdrop" id="menu-backdrop"></div>
-
-  <!-- Navbar Section -->
-  <div class="navbar-container">
-    <div class="navbar">
-      <div class="menu-toggle" id="new-menu-toggle">☰</div>
-      <div class="logo">Sydrey Enterprise</div>
-      <div class="cart-profile">
-        <% if (user) { %>
-          <a href="/user/profile">
-            <% if (user.profile_photo) { %>
-              <img src="<%= user.profile_photo %>?v=<%= Date.now() %>" alt="Profile Photo" class="profile-image">
-            <% } else { %>
-              <img src="/images/default.png" alt="Profile Photo" class="profile-image">
-            <% } %>
-          </a>
-        <% } %>
-      </div>
-    </div>
-  </div>
-
-  <!-- Dropdown Menu -->
-  <%- include('_menu') %>
 
   <div class="bookings-container">
     <h1 class="page-title">Admin Bookings</h1>
@@ -245,6 +225,5 @@
     <% } %>
   </div>
 
-  <script src="/js/menu.js" defer></script>
-</body>
-</html>
+  
+  <%- include('_footer', { additionalScripts }) %>

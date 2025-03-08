@@ -78,17 +78,26 @@ async function getGroupedAdminOrders() {
   }
 }
 
+/**
 // Route for the admin orders page
 router.get('/admin/orders', async (req, res) => {
+  console.log('Session User:', req.session.user);
   try {
     // Use the grouped version for a better data structure
     const orders = await getGroupedAdminOrders();
-    res.render('admin-orders', { orders, user: req.session.user });
+
+    const [cartResults] = await db.query(
+       'SELECT COUNT(*) as count FROM cart WHERE user_id = ?',
+       [req.session.user.id] // Assuming the user ID is stored in the session
+    );
+    const cartCount = cartResults[0]?.count || 0; // Default to 0 if cartResults is empty
+    res.render('admin-orders', { orders, user: req.session.user, cartCount });
   } catch (error) {
     console.error('Error fetching admin orders:', error);
     res.status(500).render('error', { message: 'Failed to load orders. Please try again later.' });
   }
 });
+**/
 
 // Route to update order status
 router.post('/admin/orders/update-status/:id', async (req, res) => {
