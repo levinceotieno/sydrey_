@@ -40,7 +40,8 @@
 }
 
 .contact-text {
-  font-size: 0.75rem;
+  font-size: 0.9rem;
+  font-weight: 500;
 }
 
 /* Fix specific SVG with text inside (Quality Guaranteed icon) */
