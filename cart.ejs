@@ -94,46 +94,34 @@
       <div class="modal-content">
         <span id="close-modal" class="close-btn">&times;</span>
         <h2>Complete Your Order</h2>
-	<form id="checkout-form" class="space-y-4">
-	  <input type="hidden" id="userId" name="userId" value="<%= user.id %>">
-
-	  <div class="mb-4">
-    	    <label for="userEmail" class="block text-sm font-medium text-gray-700">Email</label>
-    	    <input type="email" id="userEmail" value="<%= user.email %>" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
-	  </div>
-
-	  <div class="mb-4">
-    	    <label class="block text-sm font-medium text-gray-700">Delivery Location</label>
-    	    <div class="mt-2 space-y-2">
-      	      <div>
-		<label class="inline-flex items-center">
-    		  <input type="radio" name="deliveryLocation" value="withinKenya" checked class="form-radio">
-    		  <span class="ml-2">Within Kenya (Delivery in 3 days)</span>
-  		</label>
-                <label class="inline-flex items-center">
-	      </div>
-      	      <div>
-		<label class="inline-flex items-center">
-    		  <input type="radio" name="deliveryLocation" value="outsideKenya" class="form-radio">
-    		  <span class="ml-2">Outside Kenya (Delivery in 7 days)</span>
-  		</label>
-              </div>
+        <form id="checkout-form">
+          <input type="hidden" name="userId" value="<%= userId %>">
+          
+          <fieldset>
+            <legend>Delivery Location</legend>
+            <div class="radio-group">
+              <label class="radio-label">
+                <input type="radio" name="deliveryLocation" value="withinKenya" required>
+                <span class="radio-text">Within Kenya (3 days delivery)</span>
+              </label>
+              <label class="radio-label">
+                <input type="radio" name="deliveryLocation" value="outsideKenya">
+                <span class="radio-text">Outside Kenya (7 days delivery)</span>
+              </label>
             </div>
-  	  </div>
-
-	  <div class="mb-4">
-	    <label for="deliveryAddress" class="block text-sm font-medium text-gray-700">Delivery Address</label>
-  	    <textarea id="deliveryAddress" name="deliveryAddress" rows="3" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"></textarea>
-  	  </div>
-
-	  <div>
-    	    <p class="font-bold mb-2">Grand Total: KES <span id="grand-total"><%= grandTotal.toFixed(2) %></span></p>
-  	  </div>
-
-	  <button type="submit" class="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
-    	    Proceed to Payment
-  	  </button>
-	</form>
+          </fieldset>
+          
+          <div class="form-group">
+            <label for="deliveryAddress">Delivery Address:</label>
+            <textarea id="deliveryAddress" name="deliveryAddress" placeholder="Enter your complete delivery address" required></textarea>
+          </div>
+          
+          <div class="order-total">
+	     <p>Total Amount: <strong id="checkout-grand-total">Ksh <%= grandTotal.toFixed(2) %></strong></p>
+          </div>
+          
+          <button type="submit" class="add-to-cart-btn place-order-btn">Place Order</button>
+        </form>
       </div>
     </div>
   </main>
@@ -202,19 +190,10 @@
           quantity
         })
       })
-      .then(response => {
-  	 if (!response.ok) {
-    	    throw new Error(`HTTP error! Status: ${response.status}`);
-	 }
-  	 return response.json();
-      })
+      .then(response => response.json())
       .then(data => {
         if (data.success) {
-	  const cartCountElement = document.getElementById('cart-count');
-	  if (cartCountElement) {
-  	     cartCountElement.textContent = data.cartCount;
-	  }
-
+          document.getElementById('cart-count').textContent = data.cartCount;
 	  updateSubtotalItemCount();
           alert(data.message);
         } else {
@@ -238,19 +217,10 @@
             productId
           })
         })
-        .then(response => {
-  	   if (!response.ok) {
-    	      throw new Error(`HTTP error! Status: ${response.status}`);
-  	   }
-  	   return response.json();
-	})
+        .then(response => response.json())
         .then(data => {
           if (data.success) {
-	    const cartCountElement = document.getElementById('cart-count');
-	    if (cartCountElement) {
-  		cartCountElement.textContent = data.cartCount;
-	    }
-
+            document.getElementById('cart-count').textContent = data.cartCount;
             document.querySelector(`.cart-item[data-product-id="${productId}"]`).remove();
             alert(data.message);
             
@@ -334,19 +304,11 @@
         checkoutForm.addEventListener('submit', function(event) {
           event.preventDefault();
           
-	  const userId = document.getElementById('userId').value;
-          const deliveryAddress = document.getElementById('deliveryAddress').value;
-          const deliveryLocation = document.querySelector('input[name="deliveryLocation"]:checked').value;
-      
-          if (!userId || !deliveryAddress || !deliveryLocation) {
-             alert('Please fill in all required fields');
-             return;
-	  }
-
-	  const orderData = {
-             userId: userId,
-             deliveryLocation: deliveryLocation,
-             deliveryAddress: deliveryAddress
+          const formData = new FormData(checkoutForm);
+          const orderData = {
+            userId: formData.get('userId'),
+            deliveryLocation: formData.get('deliveryLocation'),
+            deliveryAddress: formData.get('deliveryAddress')
           };
           
           fetch('/cart/checkout', {

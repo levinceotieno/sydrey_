@@ -1,58 +1,61 @@
+//const BASE_URL = "https://uncomfortable-gertruda-sydrey-backend-3a3c7743.koyeb.app";
+
 console.log("checkout.js loaded");
-const PAYSTACK_PUBLIC_KEY = process.env.PAYSTACK_PUBLIC_KEY;
 
 // Checkout form submission
 document.getElementById('checkout-form').addEventListener('submit', async (e) => {
   e.preventDefault();
 
   console.log('Form submitted');
-  const deliveryLocationUI = document.querySelector('input[name="deliveryLocation"]:checked').value;
-  const deliveryLocation = deliveryLocationUI === 'Within Kenya' ? 'withinKenya' : 'outsideKenya';
-
+  const deliveryLocation = document.querySelector('input[name="deliveryLocation"]:checked').value;
   const deliveryAddress = document.getElementById('deliveryAddress').value;
-  const email = document.getElementById('userEmail').value;
-  const userId = document.getElementById('userId').value;
-	  
-  const grandTotal = parseFloat(document.getElementById('grand-total').textContent.replace(/[^0-9.-]+/g, ''));
-
-  const deliveryDate = new Date();
-  deliveryDate.setDate(deliveryDate.getDate() + 7);
-  const formattedDeliveryDate = deliveryDate.toISOString().split('T')[0]; // YYYY-MM-DD form
-  
-  console.log('Payment details:', { 
-    email, 
-    amount: grandTotal, 
-    userId, 
-    deliveryLocation, 
-    deliveryAddress,
-    deliveryDate: formattedDeliveryDate 
-  });
+  const email = 'user@example.com'; // Replace with actual user email
+  const amount = grandTotal; // Use the grand total from your cart
+  const userId = 123; // Replace with actual user ID from session
 
   try {
     // Initialize Payment
     const paymentResponse = await fetch('/payment/initialize', {
+	method: 'POST',
+	headers: {
+	   'Content-Type': 'application/json',
+	},
+	body: JSON.stringify({ email, amount, userId, deliveryLocation, deliveryAddress }),
+    });
+
+    const paymentData = await paymentResponse.json();
+    if (paymentData.status) {
+	// Redirect to Paystack payment page
+	window.location.href = paymentData.data.authorization_url;
+    } else {
+	alert('Failed to initialize payment');
+    }
+  } catch (error) {
+     console.error('Error during checkout:', error);
+     alert('An error occurred. Please try again.');
+  }
+});
+
+  try {
+    const response = await fetch(`/cart/checkout`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ 
-	email, 
-	amount: grandTotal, 
-	userId, 
-	deliveryLocation, 
-	deliveryAddress,
-	deliveryDate: formattedDeliveryDate
+      credentials: 'include',
+      body: JSON.stringify({
+        userId, // Use the global variable set in the EJS file
+        deliveryLocation,
+        deliveryAddress,
       }),
     });
 
-    const paymentData = await paymentResponse.json();
-    console.log('Payment initialization response:', paymentData);
-
-    if (paymentData.status) {
-      // Redirect to Paystack payment page
-      window.location.href = paymentData.data.authorization_url;
+    const result = await response.json();
+    if (response.ok) {
+      alert(result.message);
+      window.location.href = '/orders/history';
     } else {
-      alert('Failed to initialize payment: ' + (paymentData.message || 'Unknown error'));
+      alert(result.message);
     }
   } catch (error) {
     console.error('Error during checkout:', error);

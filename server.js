@@ -18,6 +18,7 @@ const blogRoutes = require('./routes/blogs');
 const { getOrdersFromDatabase } = require('./utils/database');
 const { authenticateUser, authorizeRole } = require('./middleware/auth');
 const bookingRoutes = require('./routes/bookingRoutes');
+const paymentRoutes = require('./routes/paymentRoutes');
 
 const app = express();
 
@@ -337,6 +338,7 @@ app.use('/auth', authRoutes); // Routes from auth.js are accessible at the root 
 app.use('/orders', ordersRoutes);
 app.use('/cart', cartRoutes);
 app.use(blogRoutes);
+app.use('/payment', paymentRoutes);
 
 app.all('*', (req, res, next) => {
     console.log(`Received ${req.method} request to ${req.path}`);
