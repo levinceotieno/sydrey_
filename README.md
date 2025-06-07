@@ -67,3 +67,9 @@ Nairobi, Kenya
    ```bash
    git clone https://github.com/levinceotieno/sydrey_.git
    cd sydrey
+   ```
+
+## Install dependencies:
+   ```bash
+   npm install
+   ```
