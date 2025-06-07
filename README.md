@@ -69,7 +69,30 @@ Nairobi, Kenya
    cd sydrey
    ```
 
-## Install dependencies:
+2. **Install dependencies:**
    ```bash
    npm install
    ```
+   
+3. **Configure environment variables:**
+   Create a .env file and add:
+   ```bash
+   DB_HOST=your-scalegrid-host
+   DB_USER=your-db-user
+   DB_PASSWORD=your-db-password
+   DB_NAME=your-db-name
+   ADMIN_PASSKEY=ABCDE
+   ```
+   
+4. **Start the app:**
+   ```bash
+   npm start
+   ```
+5. **Visit** http://localhost:3000
+
+## 🚀 Deployment
+The app is hosted live on Koyeb, and the MySQL database is managed through ScaleGrid. It is accessible on mobile browsers with a responsive design optimized for Android.
+
+## 🎯 Project Goal
+To empower farmers by connecting them directly with customers and providing support services like education and agronomy. This system also helps streamline the agricultural supply chain digitally.
+   
