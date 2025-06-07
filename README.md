@@ -65,5 +65,5 @@ Nairobi, Kenya
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/your-username/sydreys-enterprise.git
-   cd sydreys-enterprise
+   git clone https://github.com/levinceotieno/sydrey_.git
+   cd sydrey
